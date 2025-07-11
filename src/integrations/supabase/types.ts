@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      offer_segments: {
+        Row: {
+          created_at: string | null
+          current_count: number
+          id: string
+          label: string
+          max_per_round: number
+          round_number: number
+          segment_number: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_count?: number
+          id?: string
+          label: string
+          max_per_round: number
+          round_number?: number
+          segment_number: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_count?: number
+          id?: string
+          label?: string
+          max_per_round?: number
+          round_number?: number
+          segment_number?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      spins: {
+        Row: {
+          created_at: string | null
+          id: string
+          offer_label: string
+          round_number: number
+          segment_id: number
+          spin_number_in_round: number
+          spin_result: string
+          total_spin_number: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          offer_label: string
+          round_number?: number
+          segment_id: number
+          spin_number_in_round: number
+          spin_result: string
+          total_spin_number: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          offer_label?: string
+          round_number?: number
+          segment_id?: number
+          spin_number_in_round?: number
+          spin_result?: string
+          total_spin_number?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_state: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string | null
+          value: Json
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string | null
+          value: Json
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          created_at: string | null
+          id: string
+          mobile: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          mobile: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          mobile?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { checkDuplicateUser, createUser, saveUserSession } from '@/services/userService';
 
 const FormPage = () => {
   const [name, setName] = useState("");
@@ -12,21 +13,6 @@ const FormPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const checkDuplicateUser = (name: string, mobile: string) => {
-    const existingUsers = JSON.parse(localStorage.getItem("spinnerUsers") || "[]");
-    return existingUsers.some((user: any) => 
-      user.name.toLowerCase() === name.toLowerCase() && user.mobile === mobile
-    );
-  };
-
-  const saveUser = (name: string, mobile: string) => {
-    const existingUsers = JSON.parse(localStorage.getItem("spinnerUsers") || "[]");
-    const newUser = { name, mobile, timestamp: Date.now() };
-    existingUsers.push(newUser);
-    localStorage.setItem("spinnerUsers", JSON.stringify(existingUsers));
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,25 +37,37 @@ const FormPage = () => {
 
     setIsLoading(true);
 
-    // Check for duplicate user
-    if (checkDuplicateUser(name.trim(), mobile.trim())) {
+    try {
+      // Check for duplicate user
+      const isDuplicate = await checkDuplicateUser(name.trim(), mobile.trim());
+      if (isDuplicate) {
+        toast({
+          title: "Already Played!",
+          description: "You've already participated in the lucky draw.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Create new user
+      const newUser = await createUser(name.trim(), mobile.trim());
+      
+      // Save user session
+      saveUserSession(newUser);
+      
+      // Navigate to spinner page
+      navigate("/spinner");
+    } catch (error) {
+      console.error('Error submitting form:', error);
       toast({
-        title: "Already Played!",
-        description: "You've already participated in the lucky draw.",
+        title: "Error",
+        description: "Something went wrong. Please try again.",
         variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
-      return;
     }
-
-    // Save user and redirect
-    saveUser(name.trim(), mobile.trim());
-    
-    // Simulate loading for better UX
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/spinner");
-    }, 500);
   };
 
   return (

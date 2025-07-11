@@ -3,46 +3,63 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useNavigate } from "react-router-dom";
-import { SpinnerWheel, SpinnerSegment } from "@/components/SpinnerWheel";
+import { SpinnerWheel } from "@/components/SpinnerWheel";
+import type { SpinnerSegment } from "@/components/SpinnerWheel";
 import ResultPopup from "@/components/ResultPopup";
 import { useToast } from "@/hooks/use-toast";
-import { useSpinnerLogic } from "@/hooks/useSpinnerLogic";
+import { getCurrentUserSession, type UserSession } from '@/services/userService';
+import { canUserSpin, recordSpin, selectRandomOffer } from '@/services/spinService';
+import { getSystemState } from '@/services/systemService';
 
 const SpinnerPage = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [spinResult, setSpinResult] = useState<SpinnerSegment | null>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<UserSession | null>(null);
+  const [totalSpins, setTotalSpins] = useState(0);
+  const [currentRound, setCurrentRound] = useState(0);
+  const [canSpin, setCanSpin] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { spinnerState, canUserSpin, recordSpin } = useSpinnerLogic();
 
-  // User session validation
+  // User session validation and data loading
   useEffect(() => {
-    try {
-      const userData = localStorage.getItem("currentUser");
-      if (!userData) {
+    const initializePage = async () => {
+      const user = getCurrentUserSession();
+      if (!user) {
         console.log("No user session found, redirecting to form");
-        navigate("/");
-        return;
-      }
-      
-      const user = JSON.parse(userData);
-      if (!user.name || !user.mobile) {
-        console.warn("Invalid user data, redirecting to form");
-        localStorage.removeItem("currentUser");
         navigate("/");
         return;
       }
       
       setCurrentUser(user);
       console.log("User session validated:", user.name);
-    } catch (error) {
-      console.error("Error validating user session:", error);
-      navigate("/");
-    }
-  }, [navigate]);
+
+      try {
+        // Check if user can spin
+        const userCanSpin = await canUserSpin(user.id);
+        setCanSpin(userCanSpin);
+
+        // Load system state
+        const systemState = await getSystemState();
+        setTotalSpins(parseInt(systemState.total_spins));
+        setCurrentRound(parseInt(systemState.current_round));
+      } catch (error) {
+        console.error('Error loading page data:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load data. Please refresh the page.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializePage();
+  }, [navigate, toast]);
 
   // Performance optimization: memoized handlers
   const handleAdminAccess = useCallback(() => {
@@ -50,44 +67,17 @@ const SpinnerPage = () => {
   }, [navigate]);
 
   const handleSpinComplete = useCallback((result: SpinnerSegment) => {
-    if (!currentUser) {
-      console.error("No current user found during spin completion");
-      return;
-    }
+    setSpinResult(result);
+    setIsSpinning(false);
+    setShowResult(true);
+    console.log(`Spin completed: ${result.label} for user ${currentUser?.name}`);
+  }, [currentUser]);
 
-    try {
-      recordSpin(currentUser.mobile, result);
-      setSpinResult(result);
-      setIsSpinning(false);
-      setShowResult(true);
-      
-      console.log(`Spin completed: ${result.label} for user ${currentUser.name}`);
-    } catch (error) {
-      console.error("Error handling spin completion:", error);
+  const handleSpinStart = useCallback(async () => {
+    if (!currentUser || !canSpin) {
       toast({
-        title: "Error",
-        description: "There was an issue processing your spin. Please try again.",
-        variant: "destructive",
-      });
-      setIsSpinning(false);
-    }
-  }, [currentUser, recordSpin, toast]);
-
-  const handleSpinStart = useCallback(() => {
-    if (!currentUser) {
-      toast({
-        title: "Session Error",
-        description: "Please refresh the page and try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Enhanced user eligibility check
-    if (!canUserSpin(currentUser.mobile)) {
-      toast({
-        title: "Already Played Today",
-        description: "You can only spin once per day! Come back tomorrow for another chance.",
+        title: "Cannot Spin",
+        description: canSpin ? "Session error. Please refresh." : "You've already played today!",
         variant: "destructive",
       });
       return;
@@ -100,20 +90,49 @@ const SpinnerPage = () => {
     
     console.log(`Starting spin for user: ${currentUser.name}`);
     setIsSpinning(true);
-  }, [currentUser, canUserSpin, isSpinning, toast]);
+
+    try {
+      // Get random offer and record spin
+      const result = await selectRandomOffer();
+      await recordSpin(currentUser.id, result);
+      
+      // Update local state
+      setCanSpin(false);
+      setTotalSpins(prev => prev + 1);
+      
+      // Set result after a delay to allow wheel animation
+      setTimeout(() => {
+        setSpinResult(result);
+        setShowResult(true);
+        setIsSpinning(false);
+      }, 3000);
+    } catch (error) {
+      console.error('Error during spin:', error);
+      setIsSpinning(false);
+      toast({
+        title: "Error",
+        description: "Error processing spin. Please try again.",
+        variant: "destructive",
+      });
+    }
+  }, [currentUser, canSpin, isSpinning, toast]);
 
   const handleCloseResult = useCallback(() => {
     setShowResult(false);
     setSpinResult(null);
   }, []);
 
-  // Show loading if no user session
-  if (!currentUser) {
+  // Show loading if initializing
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-festive flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
       </div>
     );
+  }
+
+  if (!currentUser) {
+    return null;
   }
 
   return (
@@ -153,12 +172,12 @@ const SpinnerPage = () => {
         <SpinnerWheel 
           onSpinComplete={handleSpinComplete}
           isSpinning={isSpinning}
-          canSpin={canUserSpin(currentUser.mobile)}
+          canSpin={canSpin}
           onSpinStart={handleSpinStart}
         />
         
         {/* User eligibility check display */}
-        {!isSpinning && !canUserSpin(currentUser.mobile) && (
+        {!isSpinning && !canSpin && (
           <div className="mt-4 text-center">
             <p className="text-white/90 text-lg font-medium">Already played today!</p>
             <p className="text-white/70 text-sm mt-1">Come back tomorrow for another chance</p>
@@ -168,8 +187,8 @@ const SpinnerPage = () => {
         {/* Spin Counter - Enhanced */}
         <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-primary/20">
           <p className="text-xs font-medium text-secondary">Total Spins</p>
-          <p className="text-xl font-bold text-primary">{spinnerState.totalSpins}</p>
-          <p className="text-xs text-muted-foreground">Round {spinnerState.currentRound + 1}</p>
+          <p className="text-xl font-bold text-primary">{totalSpins}</p>
+          <p className="text-xs text-muted-foreground">Round {currentRound + 1}</p>
         </div>
       </div>
       

@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { getSystemState } from '@/services/systemService';
+import { getOfferStats, resetAllCounters, getTotalUsers } from '@/services/adminService';
 
 interface OfferStats {
   name: string;
@@ -14,16 +16,12 @@ interface OfferStats {
 
 const AdminPage = () => {
   const [totalSpins, setTotalSpins] = useState(0);
-  const [offerStats, setOfferStats] = useState<OfferStats[]>([
-    { name: "10% OFF", current: 0, max: 25 },
-    { name: "2% OFF", current: 0, max: 20 },
-    { name: "0.50g Silver Coin", current: 0, max: 15 },
-    { name: "1 Gold Coin", current: 0, max: 5 },
-    { name: "15% OFF", current: 0, max: 15 },
-    { name: "5% OFF", current: 0, max: 15 },
-    { name: "10% OFF Premium", current: 0, max: 3 },
-    { name: "50% OFF", current: 0, max: 2 },
-  ]);
+  const [spinsInCurrentRound, setSpinsInCurrentRound] = useState(0);
+  const [currentRound, setCurrentRound] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [offerStats, setOfferStats] = useState<OfferStats[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isResetting, setIsResetting] = useState(false);
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -32,40 +30,74 @@ const AdminPage = () => {
     loadAdminData();
   }, []);
 
-  const loadAdminData = () => {
-    // Load total spins
-    const spins = localStorage.getItem("totalSpins");
-    setTotalSpins(parseInt(spins || "0"));
+  const loadAdminData = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Load system state
+      const systemState = await getSystemState();
+      setTotalSpins(parseInt(systemState.total_spins));
+      setSpinsInCurrentRound(parseInt(systemState.spins_in_current_round));
+      setCurrentRound(parseInt(systemState.current_round));
 
-    // Load offer distribution
-    const offerData = localStorage.getItem("offerDistribution");
-    if (offerData) {
-      const distribution = JSON.parse(offerData);
-      setOfferStats(prev => prev.map((offer, index) => ({
-        ...offer,
-        current: distribution[index] || 0
-      })));
+      // Load offer stats for current round
+      const stats = await getOfferStats(parseInt(systemState.current_round));
+      setOfferStats(stats);
+
+      // Load total users
+      const userCount = await getTotalUsers();
+      setTotalUsers(userCount);
+    } catch (error) {
+      console.error('Error loading admin data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load admin data",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleReset = () => {
-    // Reset all counters
-    localStorage.setItem("totalSpins", "0");
-    localStorage.setItem("offerDistribution", JSON.stringify(Array(8).fill(0)));
-    
-    // Update local state
-    setTotalSpins(0);
-    setOfferStats(prev => prev.map(offer => ({ ...offer, current: 0 })));
-    
-    toast({
-      title: "Reset Successful",
-      description: "All counters have been reset to 0",
-    });
+  const handleReset = async () => {
+    if (!window.confirm('Are you sure you want to reset all counters? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setIsResetting(true);
+      await resetAllCounters();
+      
+      // Reload data after reset
+      await loadAdminData();
+      
+      toast({
+        title: "Reset Successful",
+        description: "All counters have been reset to 0",
+      });
+    } catch (error) {
+      console.error('Error resetting counters:', error);
+      toast({
+        title: "Error",
+        description: "Failed to reset counters. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsResetting(false);
+    }
   };
 
   const handleBackToSpinner = () => {
     navigate("/spinner");
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-festive flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-festive p-4 font-poppins">
@@ -86,42 +118,68 @@ const AdminPage = () => {
         
         <Button
           onClick={handleReset}
+          disabled={isResetting}
           variant="destructive"
           className="bg-red-600 hover:bg-red-700"
         >
           <RotateCcw className="h-4 w-4 mr-2" />
-          Reset All
+          {isResetting ? 'Resetting...' : 'Reset All'}
         </Button>
       </div>
 
       <div className="max-w-4xl mx-auto space-y-6">
-        {/* Total Spins Card */}
-        <Card className="shadow-festive border-2 border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold text-center">
-              Current Round Progress
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center space-y-4">
-              <div className="text-4xl font-bold text-primary">
-                {totalSpins % 100} / 100
-              </div>
-              <Progress value={(totalSpins % 100)} className="h-3" />
-              <p className="text-muted-foreground">
-                {totalSpins % 100} spins completed in current round
-              </p>
-              <div className="pt-2 border-t">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Current Round Progress */}
+          <Card className="shadow-festive border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-center">
+                Current Round Progress
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center space-y-4">
+                <div className="text-3xl font-bold text-primary">
+                  {spinsInCurrentRound} / 100
+                </div>
+                <Progress value={spinsInCurrentRound} className="h-3" />
                 <p className="text-sm text-muted-foreground">
-                  Total Rounds Completed: <span className="font-semibold">{Math.floor(totalSpins / 100)}</span>
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Total Spins Ever: <span className="font-semibold">{totalSpins}</span>
+                  Round {currentRound + 1}
                 </p>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          {/* Total Users */}
+          <Card className="shadow-festive border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-center">
+                Total Users
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary">{totalUsers}</div>
+                <p className="text-sm text-muted-foreground">registered players</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Total Spins */}
+          <Card className="shadow-festive border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-center">
+                Total Spins
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary">{totalSpins}</div>
+                <p className="text-sm text-muted-foreground">all-time spins</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Offer Distribution */}
         <Card className="shadow-festive border-2 border-primary/20">
