@@ -12,6 +12,8 @@ interface SpinnerSegment {
 interface SpinnerWheelProps {
   onSpinComplete: (result: SpinnerSegment) => void;
   isSpinning: boolean;
+  canSpin: boolean;
+  onSpinStart: () => void;
 }
 
 const segments: SpinnerSegment[] = [
@@ -25,7 +27,7 @@ const segments: SpinnerSegment[] = [
   { id: 8, label: "50% OFF", color: "#3498DB", textColor: "#FFD700", probability: 2 },
 ];
 
-const SpinnerWheel = ({ onSpinComplete, isSpinning }: SpinnerWheelProps) => {
+const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart }: SpinnerWheelProps) => {
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
 
@@ -93,7 +95,10 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning }: SpinnerWheelProps) => {
   };
 
   const spin = () => {
-    if (isSpinning) return;
+    // First check eligibility and call onSpinStart
+    onSpinStart();
+    
+    if (isSpinning || !canSpin) return;
 
     const winningSegment = getWeightedRandomSegment();
     const segmentAngle = 360 / segments.length;
@@ -171,15 +176,21 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning }: SpinnerWheelProps) => {
       </div>
       
       {/* Spin Button */}
-      <div className="flex justify-center mt-8">
+      <div className="flex flex-col items-center mt-8 space-y-3">
         <Button
           onClick={spin}
-          disabled={isSpinning}
-          className="px-12 py-6 text-xl font-bold uppercase bg-gradient-secondary hover:shadow-glow transition-all duration-300 disabled:opacity-50"
+          disabled={isSpinning || !canSpin}
+          className="px-16 py-8 text-2xl font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300 disabled:opacity-50 shadow-festive"
           size="lg"
         >
-          {isSpinning ? "SPINNING..." : "SPIN NOW"}
+          {isSpinning ? "SPINNING..." : "🎯 SPIN NOW 🎯"}
         </Button>
+        {!canSpin && (
+          <p className="text-white/80 text-sm">Already played today! Come back tomorrow</p>
+        )}
+        {canSpin && !isSpinning && (
+          <p className="text-white/70 text-sm">Tap to spin and win exciting prizes!</p>
+        )}
       </div>
     </div>
   );

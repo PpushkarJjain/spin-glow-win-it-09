@@ -153,18 +153,15 @@ const SpinnerPage = () => {
         <SpinnerWheel 
           onSpinComplete={handleSpinComplete}
           isSpinning={isSpinning}
+          canSpin={canUserSpin(currentUser.mobile)}
+          onSpinStart={handleSpinStart}
         />
         
-        {/* One-time spin trigger */}
-        {!isSpinning && (
+        {/* User eligibility check display */}
+        {!isSpinning && !canUserSpin(currentUser.mobile) && (
           <div className="mt-4 text-center">
-            <Button
-              onClick={handleSpinStart}
-              className="px-8 py-3 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
-            >
-              Start Spinning
-            </Button>
-            <p className="text-white/80 text-sm mt-2">One spin per day per user</p>
+            <p className="text-white/90 text-lg font-medium">Already played today!</p>
+            <p className="text-white/70 text-sm mt-1">Come back tomorrow for another chance</p>
           </div>
         )}
 

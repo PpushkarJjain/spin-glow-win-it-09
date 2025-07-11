@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { SpinnerSegment } from "./SpinnerWheel";
 import { Gift, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ResultPopupProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface ResultPopupProps {
 
 const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen && result) {
@@ -20,6 +22,15 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
       setTimeout(() => setShowConfetti(false), 3000);
     }
   }, [isOpen, result]);
+
+  const handleNextPlayer = () => {
+    // Clear current user session for next player
+    localStorage.removeItem("currentUser");
+    
+    // Close popup and redirect to form page
+    onClose();
+    navigate("/");
+  };
 
   if (!result) return null;
 
@@ -80,13 +91,13 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
               </p>
             </div>
             
-            {/* Continue Button */}
+            {/* Next Player Button */}
             <Button
-              onClick={onClose}
+              onClick={handleNextPlayer}
               className="w-full py-4 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
               size="lg"
             >
-              Awesome! Continue
+              🎉 Next Player 🎉
             </Button>
           </div>
         </DialogContent>
