@@ -1,0 +1,134 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+
+const FormPage = () => {
+  const [name, setName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const checkDuplicateUser = (name: string, mobile: string) => {
+    const existingUsers = JSON.parse(localStorage.getItem("spinnerUsers") || "[]");
+    return existingUsers.some((user: any) => 
+      user.name.toLowerCase() === name.toLowerCase() && user.mobile === mobile
+    );
+  };
+
+  const saveUser = (name: string, mobile: string) => {
+    const existingUsers = JSON.parse(localStorage.getItem("spinnerUsers") || "[]");
+    const newUser = { name, mobile, timestamp: Date.now() };
+    existingUsers.push(newUser);
+    localStorage.setItem("spinnerUsers", JSON.stringify(existingUsers));
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!name.trim() || !mobile.trim()) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (mobile.length < 10) {
+      toast({
+        title: "Error", 
+        description: "Please enter a valid mobile number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Check for duplicate user
+    if (checkDuplicateUser(name.trim(), mobile.trim())) {
+      toast({
+        title: "Already Played!",
+        description: "You've already participated in the lucky draw.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Save user and redirect
+    saveUser(name.trim(), mobile.trim());
+    
+    // Simulate loading for better UX
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate("/spinner");
+    }, 500);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-festive flex items-center justify-center p-4 font-poppins">
+      <div className="w-full max-w-md">
+        <Card className="shadow-festive border-2 border-primary/20">
+          <CardHeader className="text-center space-y-2">
+            <CardTitle className="text-3xl font-bold font-playfair text-primary">
+              SPIN & WIN
+            </CardTitle>
+            <p className="text-secondary font-medium">
+              Ghoomega Wheel, Milega Deal!
+            </p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-medium">
+                  Full Name *
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="h-12 text-base"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="mobile" className="text-sm font-medium">
+                  WhatsApp Number *
+                </Label>
+                <Input
+                  id="mobile"
+                  type="tel"
+                  placeholder="Enter your WhatsApp number"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  className="h-12 text-base"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
+              >
+                {isLoading ? "Please Wait..." : "Start Spinning"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default FormPage;
