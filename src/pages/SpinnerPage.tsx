@@ -157,14 +157,7 @@ const SpinnerPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-festive sparkles font-poppins relative overflow-hidden">
-      {/* Ambient light rays */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-radial from-yellow-400/30 via-transparent to-transparent rounded-full animate-pulse"></div>
-        <div className="absolute top-1/4 right-1/4 w-48 h-48 bg-gradient-radial from-pink-400/20 via-transparent to-transparent rounded-full animate-float"></div>
-        <div className="absolute bottom-1/3 left-1/4 w-64 h-64 bg-gradient-radial from-purple-400/20 via-transparent to-transparent rounded-full animate-float" style={{animationDelay: '1s'}}></div>
-      </div>
-      
+    <div className="min-h-screen bg-gradient-festive font-poppins">
       {/* Header with Hamburger Menu */}
       <div className="flex justify-between items-center p-4">
         <Sheet>

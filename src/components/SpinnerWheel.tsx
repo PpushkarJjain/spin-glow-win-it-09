@@ -122,122 +122,75 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart }: Spin
 
   return (
     <div className="relative w-full max-w-md mx-auto px-4">
-      {/* Enhanced Golden Arrow Pointer */}
-      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 z-20">
-        <div className="relative">
-          {/* Golden arrow with glow */}
-          <div className="w-0 h-0 border-l-8 border-r-8 border-b-16 border-l-transparent border-r-transparent border-b-yellow-400 shadow-wheel drop-shadow-lg glow-pulse"></div>
-          {/* Arrow highlight */}
-          <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-b-4 border-l-transparent border-r-transparent border-b-yellow-200"></div>
-        </div>
+      {/* Arrow Pointer */}
+      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="w-0 h-0 border-l-6 border-r-6 border-b-12 border-l-transparent border-r-transparent border-b-white shadow-lg drop-shadow-lg"></div>
       </div>
       
-      {/* Premium Spinner Wheel */}
-      <div className="relative w-80 h-80 sm:w-96 sm:h-96 mx-auto">
-        {/* Outer metallic rim */}
-        <div className="absolute inset-0 rounded-full bg-gradient-gold p-2 shadow-wheel">
-          {/* LED ring effect */}
-          <div className="absolute inset-0 rounded-full bg-gradient-conic from-yellow-400 via-red-500 via-purple-500 via-blue-500 to-yellow-400 animate-spin-slow opacity-30"></div>
-          
-          <div
-            ref={wheelRef}
-            className="spinner-wheel w-full h-full rounded-full border-4 border-yellow-200 shadow-metallic relative overflow-hidden transition-transform duration-3000 ease-out metallic-rim"
-            style={{
-              transform: `rotate(${rotation}deg)`,
-              background: "conic-gradient(from 0deg, #FF2E63 0deg 45deg, #2ECC71 45deg 90deg, #FF6B35 90deg 135deg, #3498DB 135deg 180deg, #9B59B6 180deg 225deg, #E74C3C 225deg 270deg, #2ECC71 270deg 315deg, #3498DB 315deg 360deg)"
-            }}
-          >
-            {/* Enhanced Segments with embossed text and icons */}
-            {segments.map((segment, index) => {
-              const angle = index * segmentAngle;
-              const textAngle = angle + segmentAngle / 2;
-              
-              return (
+      {/* Spinner Wheel - Mobile Responsive */}
+      <div className="relative w-72 h-72 sm:w-80 sm:h-80 mx-auto">
+        <div
+          ref={wheelRef}
+          className="w-full h-full rounded-full border-8 border-white shadow-festive relative overflow-hidden transition-transform duration-3000 ease-out"
+          style={{
+            transform: `rotate(${rotation}deg)`,
+            background: "conic-gradient(from 0deg, #FF2E63 0deg 45deg, #2ECC71 45deg 90deg, #FF6B35 90deg 135deg, #3498DB 135deg 180deg, #9B59B6 180deg 225deg, #E74C3C 225deg 270deg, #2ECC71 270deg 315deg, #3498DB 315deg 360deg)"
+          }}
+        >
+          {/* Segments with text */}
+          {segments.map((segment, index) => {
+            const angle = index * segmentAngle;
+            const textAngle = angle + segmentAngle / 2;
+            
+            return (
+              <div
+                key={segment.id}
+                className="absolute inset-0 flex items-center justify-center"
+                style={{
+                  transform: `rotate(${textAngle}deg)`,
+                  transformOrigin: "center"
+                }}
+              >
                 <div
-                  key={segment.id}
-                  className="absolute inset-0 flex items-center justify-center"
+                  className="text-xs font-bold text-center px-2 py-1 rounded"
                   style={{
-                    transform: `rotate(${textAngle}deg)`,
-                    transformOrigin: "center"
+                    color: segment.textColor,
+                    transform: `translateY(-120px) rotate(${-textAngle}deg)`,
+                    textShadow: "1px 1px 2px rgba(0,0,0,0.8)",
+                    fontSize: "10px",
+                    lineHeight: "1.2",
+                    maxWidth: "60px"
                   }}
                 >
-                  {/* Segment icon */}
-                  <div
-                    className="absolute"
-                    style={{
-                      transform: `translateY(-140px) rotate(${-textAngle}deg)`,
-                    }}
-                  >
-                    {segment.label.includes('coin') || segment.label.includes('Coin') ? (
-                      <div className="w-6 h-6 bg-gradient-gold rounded-full border-2 border-yellow-200 shadow-lg flex items-center justify-center text-xs font-bold text-yellow-900">💰</div>
-                    ) : (
-                      <div className="w-6 h-6 bg-gradient-primary rounded-full border-2 border-white shadow-lg flex items-center justify-center text-xs font-bold text-white">%</div>
-                    )}
-                  </div>
-                  
-                  {/* Enhanced embossed text */}
-                  <div
-                    className="text-xs font-bold text-center px-2 py-1 rounded font-playfair"
-                    style={{
-                      color: segment.textColor,
-                      transform: `translateY(-110px) rotate(${-textAngle}deg)`,
-                      textShadow: "2px 2px 4px rgba(0,0,0,0.9), -1px -1px 2px rgba(255,255,255,0.3)",
-                      fontSize: "11px",
-                      lineHeight: "1.2",
-                      maxWidth: "70px",
-                      fontWeight: "900",
-                      letterSpacing: "0.5px"
-                    }}
-                  >
-                    {segment.label}
-                  </div>
+                  {segment.label}
                 </div>
-              );
-            })}
-          
-            {/* Premium Center Hub */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-gradient-gold rounded-full border-4 border-yellow-300 shadow-wheel flex items-center justify-center">
-              {/* Inner decorative ring */}
-              <div className="w-12 h-12 bg-gradient-metallic rounded-full border-2 border-yellow-400 shadow-inner flex items-center justify-center">
-                <div className="w-6 h-6 bg-white rounded-full shadow-inner"></div>
               </div>
-            </div>
+            );
+          })}
+          
+          {/* Center circle */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-primary rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+            <div className="w-4 h-4 bg-white rounded-full"></div>
           </div>
         </div>
       </div>
       
-      {/* Premium Spin Button */}
-      <div className="flex flex-col items-center mt-12 space-y-4">
+      {/* Spin Button */}
+      <div className="flex flex-col items-center mt-8 space-y-3">
         <Button
           onClick={spin}
           disabled={isSpinning || !canSpin}
-          className="px-20 py-10 text-3xl font-bold uppercase bg-gradient-gold hover:shadow-glow transition-all duration-300 disabled:opacity-50 shadow-festive glow-pulse font-playfair text-yellow-900 border-4 border-yellow-300 hover:scale-105 active:scale-95"
+          className="px-16 py-8 text-2xl font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300 disabled:opacity-50 shadow-festive"
           size="lg"
         >
-          {isSpinning ? (
-            <span className="flex items-center gap-3">
-              <span className="animate-spin">⭐</span>
-              SPINNING...
-              <span className="animate-spin">⭐</span>
-            </span>
-          ) : (
-            <span className="flex items-center gap-3">
-              🎯 SPIN NOW 🎯
-            </span>
-          )}
+          {isSpinning ? "SPINNING..." : "🎯 SPIN NOW 🎯"}
         </Button>
-        
-        {/* Subtitle */}
-        <div className="text-center">
-          {!canSpin ? (
-            <p className="text-white/90 text-lg font-medium">Already played today!</p>
-          ) : (
-            <>
-              <p className="text-white/90 text-lg font-medium mb-1">One spin per day per user</p>
-              <p className="text-white/70 text-sm">Tap the golden button to win amazing prizes!</p>
-            </>
-          )}
-        </div>
+        {!canSpin && (
+          <p className="text-white/80 text-sm">Already played today! Come back tomorrow</p>
+        )}
+        {canSpin && !isSpinning && (
+          <p className="text-white/70 text-sm">Tap to spin and win exciting prizes!</p>
+        )}
       </div>
     </div>
   );
