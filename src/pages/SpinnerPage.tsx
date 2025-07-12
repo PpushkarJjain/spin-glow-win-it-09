@@ -100,9 +100,18 @@ const SpinnerPage = () => {
       setCanSpin(false);
       setTotalSpins(prev => prev + 1);
       
+      // Map service result to UI component format
+      const uiResult: SpinnerSegment = {
+        id: result.id,
+        label: result.label,
+        color: result.color,
+        textColor: "#FFD700",
+        probability: 0 // This will be determined by the wheel component
+      };
+      
       // Set result after a delay to allow wheel animation
       setTimeout(() => {
-        setSpinResult(result);
+        setSpinResult(uiResult);
         setShowResult(true);
         setIsSpinning(false);
       }, 3000);
@@ -116,6 +125,15 @@ const SpinnerPage = () => {
       });
     }
   }, [currentUser, canSpin, isSpinning, toast]);
+
+  // Helper function to get segment colors
+  const getSegmentColor = (segmentNumber: number): string => {
+    const colors = [
+      "#FF2E63", "#2ECC71", "#FF6B35", "#3498DB", 
+      "#9B59B6", "#E74C3C", "#2ECC71", "#3498DB"
+    ];
+    return colors[segmentNumber - 1] || "#FF2E63";
+  };
 
   const handleCloseResult = useCallback(() => {
     setShowResult(false);
