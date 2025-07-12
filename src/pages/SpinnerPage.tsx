@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ const SpinnerPage = () => {
   const [currentRound, setCurrentRound] = useState(0);
   const [canSpin, setCanSpin] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasSpun, setHasSpun] = useState(false);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -70,11 +72,12 @@ const SpinnerPage = () => {
     setSpinResult(result);
     setIsSpinning(false);
     setShowResult(true);
+    setHasSpun(true);
     console.log(`Spin completed: ${result.label} for user ${currentUser?.name}`);
   }, [currentUser]);
 
   const handleSpinStart = useCallback(async () => {
-    if (!currentUser || !canSpin) {
+    if (!currentUser || !canSpin || hasSpun) {
       toast({
         title: "Cannot Spin",
         description: canSpin ? "Session error. Please refresh." : "You've already played today!",
@@ -114,6 +117,7 @@ const SpinnerPage = () => {
         setSpinResult(uiResult);
         setShowResult(true);
         setIsSpinning(false);
+        setHasSpun(true);
       }, 3000);
     } catch (error) {
       console.error('Error during spin:', error);
@@ -124,16 +128,15 @@ const SpinnerPage = () => {
         variant: "destructive",
       });
     }
-  }, [currentUser, canSpin, isSpinning, toast]);
+  }, [currentUser, canSpin, hasSpun, isSpinning, toast]);
 
-  // Helper function to get segment colors
-  const getSegmentColor = (segmentNumber: number): string => {
-    const colors = [
-      "#FF2E63", "#2ECC71", "#FF6B35", "#3498DB", 
-      "#9B59B6", "#E74C3C", "#2ECC71", "#3498DB"
-    ];
-    return colors[segmentNumber - 1] || "#FF2E63";
-  };
+  const handleNextPlayer = useCallback(() => {
+    // Clear current user session for next player
+    localStorage.removeItem("currentUser");
+    
+    // Navigate to form page for next player
+    navigate("/");
+  }, [navigate]);
 
   const handleCloseResult = useCallback(() => {
     setShowResult(false);
@@ -190,12 +193,26 @@ const SpinnerPage = () => {
         <SpinnerWheel 
           onSpinComplete={handleSpinComplete}
           isSpinning={isSpinning}
-          canSpin={canSpin}
+          canSpin={canSpin && !hasSpun}
           onSpinStart={handleSpinStart}
         />
         
+        {/* Post-spin Next Player Button */}
+        {hasSpun && !showResult && (
+          <div className="mt-8 text-center">
+            <Button
+              onClick={handleNextPlayer}
+              className="px-8 py-4 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
+              size="lg"
+            >
+              🎉 Next Player 🎉
+            </Button>
+            <p className="text-white/90 text-sm mt-2">Ready for the next participant!</p>
+          </div>
+        )}
+        
         {/* User eligibility check display */}
-        {!isSpinning && !canSpin && (
+        {!isSpinning && !canSpin && !hasSpun && (
           <div className="mt-4 text-center">
             <p className="text-white/90 text-lg font-medium">Already played today!</p>
             <p className="text-white/70 text-sm mt-1">Come back tomorrow for another chance</p>
