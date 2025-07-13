@@ -43,14 +43,19 @@ All colors MUST be HSL.
     --spinner-purple: 270 50% 40%; /* Purple accent */
     --spinner-blue: 210 100% 56%; /* Blue accent */
 
-    /* Gradients */
+    /* Premium Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--spinner-gold)));
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(10 100% 30%));
-    --gradient-festive: radial-gradient(circle, hsl(0 100% 50%), hsl(25 100% 50%), hsl(270 50% 40%), hsl(210 100% 56%));
+    --gradient-festive: radial-gradient(circle at center, hsl(0 100% 45%), hsl(15 100% 50%), hsl(30 100% 55%), hsl(270 60% 35%), hsl(210 100% 45%));
+    --gradient-golden: linear-gradient(135deg, hsl(45 100% 60%), hsl(35 100% 50%), hsl(25 100% 45%));
+    --gradient-metallic: linear-gradient(135deg, hsl(45 100% 70%), hsl(40 100% 60%), hsl(35 90% 50%), hsl(30 80% 40%));
 
-    /* Shadows */
+    /* Premium Shadows & Glows */
     --shadow-glow: 0 0 20px hsl(var(--primary) / 0.3);
     --shadow-festive: 0 10px 30px -10px hsl(var(--primary) / 0.4);
+    --shadow-golden: 0 0 30px hsl(45 100% 50% / 0.4), 0 0 60px hsl(45 100% 50% / 0.2);
+    --shadow-metallic: inset 0 1px 2px hsl(45 100% 80% / 0.8), inset 0 -1px 2px hsl(30 60% 30% / 0.5);
+    --glow-pulse: 0 0 15px hsl(var(--primary) / 0.6), 0 0 30px hsl(var(--primary) / 0.4), 0 0 45px hsl(var(--primary) / 0.2);
 
     --radius: 0.5rem;
 
@@ -119,4 +124,123 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Premium Animation Keyframes */
+@keyframes sparkle-float {
+  0% { 
+    opacity: 0; 
+    transform: translateY(100px) scale(0); 
+  }
+  15% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
+  85% { 
+    opacity: 1; 
+    transform: translateY(-20px) scale(1); 
+  }
+  100% { 
+    opacity: 0; 
+    transform: translateY(-100px) scale(0); 
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { 
+    box-shadow: var(--shadow-golden); 
+  }
+  50% { 
+    box-shadow: var(--glow-pulse); 
+  }
+}
+
+@keyframes rotate-golden {
+  from { 
+    transform: rotate(0deg); 
+  }
+  to { 
+    transform: rotate(360deg); 
+  }
+}
+
+@keyframes light-ray {
+  0% { 
+    opacity: 0.3; 
+    transform: rotate(0deg) scale(1); 
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: rotate(180deg) scale(1.1); 
+  }
+  100% { 
+    opacity: 0.3; 
+    transform: rotate(360deg) scale(1); 
+  }
+}
+
+@keyframes spin-decelerate {
+  0% { 
+    transform: rotate(0deg); 
+    animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19); 
+  }
+  50% { 
+    transform: rotate(1800deg); 
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+  }
+  100% { 
+    transform: rotate(var(--final-rotation, 3600deg)); 
+    animation-timing-function: cubic-bezier(0.23, 1, 0.320, 1); 
+  }
+}
+
+/* Premium Animation Classes */
+.spinner-background {
+  background: var(--gradient-festive);
+  position: relative;
+  overflow: hidden;
+}
+
+.spinner-background::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    transparent, 
+    hsl(45 100% 50% / 0.1), 
+    transparent, 
+    hsl(45 100% 50% / 0.1), 
+    transparent
+  );
+  animation: rotate-golden 20s linear infinite;
+  pointer-events: none;
+}
+
+.floating-sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: hsl(45 100% 70%);
+  border-radius: 50%;
+  animation: sparkle-float 3s ease-in-out infinite;
+  box-shadow: 0 0 6px hsl(45 100% 70%);
+}
+
+.floating-sparkle:nth-child(2) { animation-delay: 0.5s; left: 20%; }
+.floating-sparkle:nth-child(3) { animation-delay: 1s; left: 40%; }
+.floating-sparkle:nth-child(4) { animation-delay: 1.5s; left: 60%; }
+.floating-sparkle:nth-child(5) { animation-delay: 2s; left: 80%; }
+
+.golden-glow {
+  box-shadow: var(--shadow-golden);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.metallic-border {
+  border: 3px solid transparent;
+  background: linear-gradient(var(--gradient-festive)) padding-box,
+              var(--gradient-metallic) border-box;
 }

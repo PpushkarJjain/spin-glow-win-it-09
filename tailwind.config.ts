@@ -77,10 +77,15 @@ export default {
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-secondary': 'var(--gradient-secondary)',
 				'gradient-festive': 'var(--gradient-festive)',
+				'gradient-golden': 'var(--gradient-golden)',
+				'gradient-metallic': 'var(--gradient-metallic)',
 			},
 			boxShadow: {
 				'glow': 'var(--shadow-glow)',
 				'festive': 'var(--shadow-festive)',
+				'golden': 'var(--shadow-golden)',
+				'metallic': 'var(--shadow-metallic)',
+				'glow-pulse': 'var(--glow-pulse)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -103,11 +108,57 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'sparkle-float': {
+					'0%': { 
+						opacity: '0', 
+						transform: 'translateY(100px) scale(0)' 
+					},
+					'15%': { 
+						opacity: '1', 
+						transform: 'translateY(0) scale(1)' 
+					},
+					'85%': { 
+						opacity: '1', 
+						transform: 'translateY(-20px) scale(1)' 
+					},
+					'100%': { 
+						opacity: '0', 
+						transform: 'translateY(-100px) scale(0)' 
+					}
+				},
+				'glow-pulse': {
+					'0%, 100%': { 
+						boxShadow: 'var(--shadow-golden)' 
+					},
+					'50%': { 
+						boxShadow: 'var(--glow-pulse)' 
+					}
+				},
+				'rotate-golden': {
+					'from': { 
+						transform: 'rotate(0deg)' 
+					},
+					'to': { 
+						transform: 'rotate(360deg)' 
+					}
+				},
+				'spin-decelerate': {
+					'0%': { 
+						transform: 'rotate(0deg)' 
+					},
+					'100%': { 
+						transform: 'rotate(var(--final-rotation, 3600deg))' 
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'sparkle-float': 'sparkle-float 3s ease-in-out infinite',
+				'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+				'rotate-golden': 'rotate-golden 20s linear infinite',
+				'spin-decelerate': 'spin-decelerate 4s cubic-bezier(0.23, 1, 0.320, 1) forwards',
 			},
 			transitionDuration: {
 				'3000': '3000ms',
