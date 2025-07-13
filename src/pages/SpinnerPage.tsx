@@ -1,8 +1,4 @@
-
 import { useState, useEffect, useCallback } from "react";
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useNavigate } from "react-router-dom";
 import { SpinnerWheel } from "@/components/SpinnerWheel";
 import type { SpinnerSegment } from "@/components/SpinnerWheel";
@@ -11,6 +7,10 @@ import { useToast } from "@/hooks/use-toast";
 import { getCurrentUserSession, type UserSession } from '@/services/userService';
 import { canUserSpin, recordSpin, selectRandomOffer } from '@/services/spinService';
 import { getSystemState } from '@/services/systemService';
+import LoadingSpinner from "@/components/spinner/LoadingSpinner";
+import SpinnerPageHeader from "@/components/spinner/SpinnerPageHeader";
+import SpinnerActions from "@/components/spinner/SpinnerActions";
+import SpinCounter from "@/components/spinner/SpinCounter";
 
 const SpinnerPage = () => {
   const [isSpinning, setIsSpinning] = useState(false);
@@ -145,11 +145,7 @@ const SpinnerPage = () => {
 
   // Show loading if initializing
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-festive-gradient flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!currentUser) {
@@ -158,34 +154,7 @@ const SpinnerPage = () => {
 
   return (
     <div className="min-h-screen bg-festive-gradient font-poppins">
-      {/* Header with Hamburger Menu */}
-      <div className="flex justify-between items-center p-4">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-64">
-            <div className="py-6">
-              <h3 className="text-lg font-semibold mb-4">Menu</h3>
-              <Button 
-                onClick={handleAdminAccess}
-                variant="outline" 
-                className="w-full justify-start"
-              >
-                Admin Panel
-              </Button>
-            </div>
-          </SheetContent>
-        </Sheet>
-
-        <div className="text-white text-center">
-          <h1 className="text-2xl font-bold font-playfair">LUCKY DRAW</h1>
-        </div>
-
-        <div className="w-10"></div> {/* Spacer for center alignment */}
-      </div>
+      <SpinnerPageHeader onAdminAccess={handleAdminAccess} />
 
       {/* Main Content Area */}
       <div className="flex flex-col items-center justify-center min-h-[80vh] p-4">
@@ -197,34 +166,15 @@ const SpinnerPage = () => {
           onSpinStart={handleSpinStart}
         />
         
-        {/* Post-spin Next Player Button */}
-        {hasSpun && !showResult && (
-          <div className="mt-8 text-center">
-            <Button
-              onClick={handleNextPlayer}
-              className="px-8 py-4 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
-              size="lg"
-            >
-              🎉 Next Player 🎉
-            </Button>
-            <p className="text-white/90 text-sm mt-2">Ready for the next participant!</p>
-          </div>
-        )}
-        
-        {/* User eligibility check display */}
-        {!isSpinning && !canSpin && !hasSpun && (
-          <div className="mt-4 text-center">
-            <p className="text-white/90 text-lg font-medium">Already played today!</p>
-            <p className="text-white/70 text-sm mt-1">Come back tomorrow for another chance</p>
-          </div>
-        )}
+        <SpinnerActions
+          hasSpun={hasSpun}
+          showResult={showResult}
+          canSpin={canSpin}
+          isSpinning={isSpinning}
+          onNextPlayer={handleNextPlayer}
+        />
 
-        {/* Spin Counter - Enhanced */}
-        <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-primary/20">
-          <p className="text-xs font-medium text-secondary">Total Spins</p>
-          <p className="text-xl font-bold text-primary">{totalSpins}</p>
-          <p className="text-xs text-muted-foreground">Round {currentRound + 1}</p>
-        </div>
+        <SpinCounter totalSpins={totalSpins} currentRound={currentRound} />
       </div>
       
       {/* Result Popup */}
