@@ -71,7 +71,7 @@ const FormPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-festive flex items-center justify-center p-4 font-poppins">
+    <div className="min-h-screen bg-festive-gradient flex items-center justify-center p-4 font-poppins">
       <div className="w-full max-w-md">
         <Card className="shadow-festive border-2 border-primary/20">
           <CardHeader className="text-center space-y-2">

@@ -146,7 +146,7 @@ const SpinnerPage = () => {
   // Show loading if initializing
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-festive flex items-center justify-center">
+      <div className="min-h-screen bg-festive-gradient flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
       </div>
     );
@@ -157,7 +157,7 @@ const SpinnerPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-festive font-poppins">
+    <div className="min-h-screen bg-festive-gradient font-poppins">
       {/* Header with Hamburger Menu */}
       <div className="flex justify-between items-center p-4">
         <Sheet>

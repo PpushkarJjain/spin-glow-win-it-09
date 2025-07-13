@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
 	darkMode: ["class"],
@@ -77,6 +78,7 @@ export default {
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-secondary': 'var(--gradient-secondary)',
 				'gradient-festive': 'var(--gradient-festive)',
+        'festive-gradient': 'radial-gradient(ellipse at center, #dc2626 0%, #ea580c 25%, #d97706 50%, #7c2d12 75%, #7c2d12 100%)',
 			},
 			boxShadow: {
 				'glow': 'var(--shadow-glow)',
@@ -103,16 +105,36 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+        sparkle: {
+          '0%, 100%': { opacity: '0', transform: 'scale(0.5)' },
+          '50%': { opacity: '1', transform: 'scale(1)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)' },
+          '50%': { boxShadow: '0 0 40px rgba(255, 215, 0, 0.8)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'bounce-gentle': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' },
+        },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+        sparkle: 'sparkle 3s ease-in-out infinite',
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        float: 'float 6s ease-in-out infinite',
+        'bounce-gentle': 'bounce-gentle 2s ease-in-out infinite',
 			},
 			transitionDuration: {
 				'3000': '3000ms',
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [tailwindcssAnimate],
 } satisfies Config;
