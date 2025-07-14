@@ -47,6 +47,12 @@
 
 | Date       | Feature/Update                                       | Notes or Context                                                              |
 | ---------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 2025-07-14 | Spinner Result Fix (6b2d70e)                         | Fixed mismatch between spinner result and popup reward.                       |
+| 2025-07-14 | State Management Cleanup (efd5c35)                   | Removed localStorage tracking and cleaned up state updates.                   |
+| 2025-07-14 | Spinner Animation and State Refactor (2d9d96e)       | Adjusted spin animation timing and cleaned up state management.               |
+| 2025-07-14 | Spinner Visuals and Layout (b7d3fa6, b3ec97e)        | Enhanced spinner design with icons and improved visual alignment.             |
+| 2025-07-13 | Spinner Page Refactor (3ce654c)                      | Modularized `SpinnerPage` and added a loading spinner.                        |
+| 2025-07-13 | Styling and Configuration (39e394d)                  | Updated gradient classes and enhanced Tailwind CSS configuration.             |
 | 2025-07-12 | Functionality and Performance Enhancements (d2a5955) | Implemented general code changes to enhance functionality and improve performance. |
 | 2025-07-12 | Post-Spin UI Updates (d67659f)                       | Replaced "Spin Now" with "Next Player" button and added redirection to form page. |
 | 2025-07-12 | SpinnerSegment Type Fix (af1c282)                    | Fixed a type mismatch for `SpinnerSegment` in `SpinnerPage.tsx`.              |
@@ -59,7 +65,19 @@
 
 ---
 
-#### 5. **AI Agent Guidance Notes (Optional)**
+#### 5. **Recent Updates**
+
+*   **Spinner Result Synchronization**: Fixed a critical bug where the reward displayed in the result popup did not match the segment the spinner visually landed on. The spin animation is now correctly synchronized with the calculated winning segment.
+*   **State Management Overhaul**: Removed the use of `localStorage` for tracking offer distribution, making the Supabase database the single source of truth for spin results. This simplifies state management and prevents data inconsistencies.
+*   **UI and UX Enhancements**:
+    *   The spinner wheel design has been updated with a more premium look, including icons for each segment and improved visual alignment.
+    *   The `SpinnerPage` has been refactored into smaller, modular components, and a loading spinner has been added to improve the user experience.
+    *   The post-spin UI has been updated to replace the "Spin Now" button with a "Next Player" button, which redirects to the user details form.
+*   **Code Refinements**:
+    *   The project's Tailwind CSS configuration has been enhanced with updated gradient classes.
+    *   The `SpinnerPage` and `SpinnerWheel` components have been refactored for better code organization and readability.
+
+#### 6. **AI Agent Guidance Notes (Optional)**
 
 * This file is meant to help AI agents and contributors onboard quickly.
 * Reference it whenever introducing a new feature or debugging context-sensitive issues.
