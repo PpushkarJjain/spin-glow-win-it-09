@@ -16,6 +16,7 @@ interface SpinnerWheelProps {
   isSpinning: boolean;
   canSpin: boolean;
   onSpinStart: () => void;
+  preSelectedResult?: SpinnerSegment | null; // Result selected by parent component
 }
 
 const segments: SpinnerSegment[] = [
@@ -29,34 +30,16 @@ const segments: SpinnerSegment[] = [
     { id: 8, label: "50%\nOFF", color: "rgb(30, 64, 175)", textColor: "#FFD700", probability: 2, icon: <Star className="w-4 h-4" /> },
 ];
 
-const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart }: SpinnerWheelProps) => {
+const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSelectedResult }: SpinnerWheelProps) => {
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
-
-  const getWeightedRandomSegment = () => {
-    const offerDistribution = JSON.parse(localStorage.getItem("offerDistribution") || JSON.stringify(Array(8).fill(0)));
-    const totalSpins = parseInt(localStorage.getItem("totalSpins") || "0");
-    if (totalSpins > 0 && totalSpins % 100 === 0) {
-      localStorage.setItem("offerDistribution", JSON.stringify(Array(8).fill(0)));
-    }
-    const availableSegments = segments.filter((segment, index) => offerDistribution[index] < segment.probability);
-    if (availableSegments.length === 0) {
-      return segments[Math.floor(Math.random() * segments.length)];
-    }
-    const totalWeight = availableSegments.reduce((sum, segment) => sum + segment.probability, 0);
-    let random = Math.random() * totalWeight;
-    for (const segment of availableSegments) {
-      random -= segment.probability;
-      if (random <= 0) return segment;
-    }
-    return availableSegments[0];
-  };
 
   const spin = () => {
     onSpinStart();
     if (isSpinning || !canSpin) return;
 
-    const winningSegment = getWeightedRandomSegment();
+    // Use pre-selected result from parent component instead of selecting here
+    const winningSegment = preSelectedResult || segments[0]; // Fallback to first segment
     const segmentAngle = 360 / segments.length;
     const winningIndex = segments.findIndex(s => s.id === winningSegment.id);
     

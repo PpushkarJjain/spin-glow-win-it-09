@@ -69,11 +69,11 @@ const SpinnerPage = () => {
   }, [navigate]);
 
   const handleSpinComplete = useCallback((result: SpinnerSegment) => {
-    setSpinResult(result);
+    // Animation completed - show the result popup
     setIsSpinning(false);
     setShowResult(true);
     setHasSpun(true);
-    console.log(`Spin completed: ${result.label} for user ${currentUser?.name}`);
+    console.log(`Spin animation completed: ${result.label} for user ${currentUser?.name}`);
   }, [currentUser]);
 
   const handleSpinStart = useCallback(async () => {
@@ -95,30 +95,29 @@ const SpinnerPage = () => {
     setIsSpinning(true);
 
     try {
-      // Get random offer and record spin
+      // Get random offer FIRST - single source of truth
       const result = await selectRandomOffer();
+      
+      // Map service result to UI component format immediately
+      const uiResult: SpinnerSegment = {
+        id: result.id,
+        label: result.label,
+        color: result.color,
+        textColor: "#FFD700",
+        probability: 0, // Not used in new flow
+        icon: getIconForSegment(result.id) // Add icon mapping
+      };
+      
+      // Set the pre-selected result for the wheel to animate to
+      setSpinResult(uiResult);
+      
+      // Record the spin in database
       await recordSpin(currentUser.id, result);
       
       // Update local state
       setCanSpin(false);
       setTotalSpins(prev => prev + 1);
       
-      // Map service result to UI component format
-      const uiResult: SpinnerSegment = {
-        id: result.id,
-        label: result.label,
-        color: result.color,
-        textColor: "#FFD700",
-        probability: 0 // This will be determined by the wheel component
-      };
-      
-      // Set result after a delay to allow wheel animation
-      setTimeout(() => {
-        setSpinResult(uiResult);
-        setShowResult(true);
-        setIsSpinning(false);
-        setHasSpun(true);
-      }, 3000);
     } catch (error) {
       console.error('Error during spin:', error);
       setIsSpinning(false);
@@ -129,6 +128,22 @@ const SpinnerPage = () => {
       });
     }
   }, [currentUser, canSpin, hasSpun, isSpinning, toast]);
+
+  // Helper function to get icon for segment
+  const getIconForSegment = (segmentId: number) => {
+    const { Coins, Gift, Percent, Star } = require("lucide-react");
+    const iconMap: Record<number, React.ReactNode> = {
+      1: <Percent className="w-4 h-4" />,
+      2: <Percent className="w-4 h-4" />,
+      3: <Coins className="w-4 h-4" />,
+      4: <Coins className="w-4 h-4" />,
+      5: <Percent className="w-4 h-4" />,
+      6: <Percent className="w-4 h-4" />,
+      7: <Gift className="w-4 h-4" />,
+      8: <Star className="w-4 h-4" />
+    };
+    return iconMap[segmentId] || <Gift className="w-4 h-4" />;
+  };
 
   const handleNextPlayer = useCallback(() => {
     // Clear current user session for next player
@@ -164,6 +179,7 @@ const SpinnerPage = () => {
           isSpinning={isSpinning}
           canSpin={canSpin && !hasSpun}
           onSpinStart={handleSpinStart}
+          preSelectedResult={spinResult}
         />
         
         <SpinnerActions
