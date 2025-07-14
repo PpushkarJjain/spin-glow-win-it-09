@@ -72,8 +72,10 @@ const SpinnerPage = () => {
   const handleSpinComplete = useCallback((result: SpinnerSegment) => {
     console.log(`Spin animation completed: ${result.label} for user ${currentUser?.name}`);
     setIsSpinning(false);
-    setShowResult(true);
-    setHasSpun(true);
+    setTimeout(() => {
+      setShowResult(true);
+      setHasSpun(true);
+    }, 1000);
   }, [currentUser]);
 
   const handleSpinStart = useCallback(async () => {
