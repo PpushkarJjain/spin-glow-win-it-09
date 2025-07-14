@@ -76,10 +76,10 @@ const FormPage = () => {
         <Card className="shadow-festive border-2 border-primary/20">
           <CardHeader className="text-center space-y-2">
             <CardTitle className="text-3xl font-bold font-playfair text-primary">
-              SPIN & WIN
+              Shreedhan Jwellers
             </CardTitle>
             <p className="text-secondary font-medium">
-              Ghoomega Wheel, Milega Deal!
+              Please sign in to try your luck!
             </p>
           </CardHeader>
           <CardContent>

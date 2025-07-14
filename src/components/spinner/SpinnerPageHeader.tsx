@@ -31,7 +31,8 @@ const SpinnerPageHeader: React.FC<SpinnerPageHeaderProps> = ({ onAdminAccess }) 
       </Sheet>
 
       <div className="text-white text-center">
-        <h1 className="text-2xl font-bold font-playfair">LUCKY DRAW</h1>
+        <h1 className="text-5xl md:text-7xl font-playfair font-bold text-yellow-300 mb-2 drop-shadow-2xl">SPIN &amp; WIN</h1>
+        <p className="text-xl md:text-2xl text-yellow-200 font-poppins">GHOOMEGA WHEEL, MILEGA DEAL!</p>
       </div>
 
       <div className="w-10"></div> {/* Spacer for center alignment */}
