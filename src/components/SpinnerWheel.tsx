@@ -1,5 +1,5 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Coins, Gift, Percent, Star } from "lucide-react";
 
@@ -35,48 +35,39 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
 
-  const spin = () => {
-    if (isSpinning || !canSpin) return;
-
-    // Start the spin process in parent component
-    onSpinStart();
-
-    // Wait for preSelectedResult to be available
-    if (!preSelectedResult) {
-      console.log('No pre-selected result available yet');
-      return;
-    }
-
-    console.log('Animating wheel to pre-selected result:', preSelectedResult);
-
-    const segmentAngle = 360 / segments.length;
-    const winningIndex = segments.findIndex(s => s.id === preSelectedResult.id);
-    
-    if (winningIndex === -1) {
-      console.error('Could not find segment for pre-selected result:', preSelectedResult);
-      return;
-    }
-    
-    // Calculate target angle (arrow points to top, so we need to adjust)
-    const targetAngle = (winningIndex * segmentAngle) + (segmentAngle / 2);
-    const spins = 5 + Math.random() * 3; // Random number of full spins for visual effect
-    const finalRotation = (spins * 360) - targetAngle;
-    
-    setRotation(prev => prev + finalRotation);
-    
-    // Call onSpinComplete after animation duration (3 seconds)
-    setTimeout(() => {
-      onSpinComplete(preSelectedResult);
-    }, 3000);
-  };
-
   // Auto-trigger animation when preSelectedResult becomes available during spinning
-  useState(() => {
-    if (isSpinning && preSelectedResult && rotation === 0) {
-      // Small delay to ensure state is properly set
-      setTimeout(spin, 100);
+  useEffect(() => {
+    if (isSpinning && preSelectedResult) {
+      console.log('Starting animation for pre-selected result:', preSelectedResult);
+      
+      const segmentAngle = 360 / segments.length;
+      const winningIndex = segments.findIndex(s => s.id === preSelectedResult.id);
+      
+      if (winningIndex === -1) {
+        console.error('Could not find segment for pre-selected result:', preSelectedResult);
+        return;
+      }
+      
+      // Calculate target angle (arrow points to top, so we need to adjust)
+      const targetAngle = (winningIndex * segmentAngle) + (segmentAngle / 2);
+      const spins = 5 + Math.random() * 3; // Random number of full spins for visual effect
+      const finalRotation = (spins * 360) - targetAngle;
+      
+      setRotation(prev => prev + finalRotation);
+      
+      // Call onSpinComplete after animation duration (3 seconds)
+      setTimeout(() => {
+        console.log('Animation complete, calling onSpinComplete with:', preSelectedResult);
+        onSpinComplete(preSelectedResult);
+      }, 3000);
     }
-  });
+  }, [isSpinning, preSelectedResult, onSpinComplete]);
+
+  const handleSpinClick = () => {
+    if (isSpinning || !canSpin) return;
+    console.log('Spin button clicked, starting spin process');
+    onSpinStart();
+  };
 
   const segmentAngle = 360 / segments.length;
   const conicGradient = segments.map((segment, index) => `${segment.color} ${index * segmentAngle}deg ${(index + 1) * segmentAngle}deg`).join(", ");
@@ -134,7 +125,7 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
       {/* Spin button and status */}
       <div className="flex flex-col items-center mt-8 space-y-3">
         <Button
-          onClick={spin}
+          onClick={handleSpinClick}
           disabled={isSpinning || !canSpin}
           className="px-16 py-8 text-2xl font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300 disabled:opacity-50 shadow-festive"
           size="lg"

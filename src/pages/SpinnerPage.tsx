@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { SpinnerWheel } from "@/components/SpinnerWheel";
@@ -70,7 +71,6 @@ const SpinnerPage = () => {
 
   const handleSpinComplete = useCallback((result: SpinnerSegment) => {
     console.log(`Spin animation completed: ${result.label} for user ${currentUser?.name}`);
-    // Animation is complete, now show the result popup
     setIsSpinning(false);
     setShowResult(true);
     setHasSpun(true);
@@ -94,11 +94,11 @@ const SpinnerPage = () => {
     setIsSpinning(true);
 
     try {
-      // Get the winning offer from database FIRST
+      // Get the winning offer from database
       const selectedOffer = await selectRandomOffer();
       console.log('Selected offer from database:', selectedOffer);
       
-      // Convert to UI format immediately
+      // Convert to UI format for the wheel animation
       const uiResult: SpinnerSegment = {
         id: selectedOffer.id,
         label: selectedOffer.label,
@@ -117,8 +117,6 @@ const SpinnerPage = () => {
       // Update local state
       setCanSpin(false);
       setTotalSpins(prev => prev + 1);
-      
-      // Note: No setTimeout here - animation will call handleSpinComplete when done
       
     } catch (error) {
       console.error('Error during spin:', error);
