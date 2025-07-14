@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Coins, Gift, Percent, Star } from "lucide-react";
@@ -7,7 +8,7 @@ interface SpinnerSegment {
   label: string;
   color: string;
   textColor: string;
-  probability: number; // out of 100
+  probability: number;
   icon: React.ReactNode;
 }
 
@@ -16,7 +17,7 @@ interface SpinnerWheelProps {
   isSpinning: boolean;
   canSpin: boolean;
   onSpinStart: () => void;
-  preSelectedResult?: SpinnerSegment | null; // Result selected by parent component
+  preSelectedResult?: SpinnerSegment | null;
 }
 
 const segments: SpinnerSegment[] = [
@@ -35,40 +36,66 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
   const wheelRef = useRef<HTMLDivElement>(null);
 
   const spin = () => {
-    onSpinStart();
     if (isSpinning || !canSpin) return;
 
-    // Use pre-selected result from parent component instead of selecting here
-    const winningSegment = preSelectedResult || segments[0]; // Fallback to first segment
+    // Start the spin process in parent component
+    onSpinStart();
+
+    // Wait for preSelectedResult to be available
+    if (!preSelectedResult) {
+      console.log('No pre-selected result available yet');
+      return;
+    }
+
+    console.log('Animating wheel to pre-selected result:', preSelectedResult);
+
     const segmentAngle = 360 / segments.length;
-    const winningIndex = segments.findIndex(s => s.id === winningSegment.id);
+    const winningIndex = segments.findIndex(s => s.id === preSelectedResult.id);
     
+    if (winningIndex === -1) {
+      console.error('Could not find segment for pre-selected result:', preSelectedResult);
+      return;
+    }
+    
+    // Calculate target angle (arrow points to top, so we need to adjust)
     const targetAngle = (winningIndex * segmentAngle) + (segmentAngle / 2);
-    const spins = 5 + Math.random() * 5;
+    const spins = 5 + Math.random() * 3; // Random number of full spins for visual effect
     const finalRotation = (spins * 360) - targetAngle;
     
     setRotation(prev => prev + finalRotation);
     
+    // Call onSpinComplete after animation duration (3 seconds)
     setTimeout(() => {
-      onSpinComplete(winningSegment);
+      onSpinComplete(preSelectedResult);
     }, 3000);
   };
+
+  // Auto-trigger animation when preSelectedResult becomes available during spinning
+  useState(() => {
+    if (isSpinning && preSelectedResult && rotation === 0) {
+      // Small delay to ensure state is properly set
+      setTimeout(spin, 100);
+    }
+  });
 
   const segmentAngle = 360 / segments.length;
   const conicGradient = segments.map((segment, index) => `${segment.color} ${index * segmentAngle}deg ${(index + 1) * segmentAngle}deg`).join(", ");
 
   return (
     <div className="relative w-full max-w-md mx-auto px-4 flex justify-center items-center flex-col">
+      {/* Arrow pointer */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-[8px] z-20">
         <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[25px] border-l-transparent border-r-transparent border-t-yellow-400 filter drop-shadow-lg"></div>
         <div className="absolute top-[-2px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-t-[20px] border-l-transparent border-r-transparent border-t-yellow-500"></div>
       </div>
       
+      {/* Spinner wheel */}
       <div 
         ref={wheelRef}
         className="relative w-80 h-80 rounded-full border-8 border-yellow-400 shadow-2xl transition-transform duration-3000 ease-out"
         style={{ background: `conic-gradient(from 0deg, ${conicGradient})`, transform: `rotate(${rotation}deg)` }}
       >
+        {/* LED lights around the rim */}
         <div className="absolute inset-0 rounded-full">
           {Array.from({ length: 32 }).map((_, i) => (
             <div 
@@ -79,6 +106,7 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
           ))}
         </div>
 
+        {/* Segments with text and icons */}
         {segments.map((segment, index) => {
           const angle = index * segmentAngle + segmentAngle / 2;
           return (
@@ -97,11 +125,13 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
           );
         })}
 
+        {/* Central hub */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full border-4 border-yellow-200 shadow-lg flex items-center justify-center">
           <Star className="w-6 h-6 text-yellow-800" />
         </div>
       </div>
       
+      {/* Spin button and status */}
       <div className="flex flex-col items-center mt-8 space-y-3">
         <Button
           onClick={spin}
