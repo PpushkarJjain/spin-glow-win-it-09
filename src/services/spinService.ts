@@ -2,6 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { getSystemState, updateSystemState } from "./systemService";
 import { getOfferSegments, updateOfferSegmentCount } from "./adminService";
+import { offerConfig } from "@/config/offerConfig.tsx";
 
 type Spin = Database['public']['Tables']['spins']['Row'];
 type SpinInsert = Database['public']['Tables']['spins']['Insert'];
@@ -160,16 +161,11 @@ export async function recordSpin(
  * Initialize offer segments for a new round
  */
 async function initializeNextRound(roundNumber: number): Promise<void> {
-  const initialOffers = [
-    { segment_number: 1, label: "0.50g Silver Coin", max_per_round: 25 },
-    { segment_number: 2, label: "1g Silver Coin", max_per_round: 20 },
-    { segment_number: 3, label: "2g Silver Coin", max_per_round: 15 },
-    { segment_number: 4, label: "5g Silver Coin", max_per_round: 5 },
-    { segment_number: 5, label: "Service upto 200rs", max_per_round: 15 },
-    { segment_number: 6, label: "5% Flat off", max_per_round: 15 },
-    { segment_number: 7, label: "10% Flat off", max_per_round: 3 },
-    { segment_number: 8, label: "12% Flat off", max_per_round: 2 }
-  ];
+  const initialOffers = offerConfig.map(offer => ({
+    segment_number: offer.id,
+    label: offer.label,
+    max_per_round: offer.maxPerRound,
+  }));
 
   const { error } = await supabase
     .from('offer_segments')

@@ -1,15 +1,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Coins, Gift, Percent, Star } from "lucide-react";
+import { Star } from "lucide-react";
+import { offerConfig } from "@/config/offerConfig.tsx";
+import type { Offer } from "@/config/offerConfig.tsx";
 
-interface SpinnerSegment {
-  id: number;
-  label: string;
-  color: string;
+interface SpinnerSegment extends Offer {
   textColor: string;
   probability: number;
-  icon: React.ReactNode;
 }
 
 interface SpinnerWheelProps {
@@ -20,16 +18,12 @@ interface SpinnerWheelProps {
   preSelectedResult?: SpinnerSegment | null;
 }
 
-const segments: SpinnerSegment[] = [
-    { id: 1, label: "0.50g\nSilver\nCoin", color: "rgb(220, 38, 38)", textColor: "#FFD700", probability: 25, icon: <Coins className="w-4 h-4" /> },
-    { id: 2, label: "1g\nSilver\nCoin", color: "rgb(5, 150, 105)", textColor: "#FFD700", probability: 20, icon: <Coins className="w-4 h-4" /> },
-    { id: 3, label: "2g\nSilver\nCoin", color: "rgb(234, 88, 12)", textColor: "#FFD700", probability: 15, icon: <Coins className="w-4 h-4" /> },
-    { id: 4, label: "5g\nSilver\nCoin", color: "rgb(30, 64, 175)", textColor: "#FFD700", probability: 5, icon: <Coins className="w-4 h-4" /> },
-    { id: 5, label: "Service\nupto\n200rs", color: "rgb(124, 58, 237)", textColor: "#FFD700", probability: 15, icon: <Gift className="w-4 h-4" /> },
-    { id: 6, label: "5%\nFlat off", color: "rgb(220, 38, 38)", textColor: "#FFD700", probability: 15, icon: <Percent className="w-4 h-4" /> },
-    { id: 7, label: "10%\nFlat off", color: "rgb(5, 150, 105)", textColor: "#FFD700", probability: 3, icon: <Percent className="w-4 h-4" /> },
-    { id: 8, label: "12%\nFlat off", color: "rgb(30, 64, 175)", textColor: "#FFD700", probability: 2, icon: <Percent className="w-4 h-4" /> },
-];
+const segments: SpinnerSegment[] = offerConfig.map(offer => ({
+  ...offer,
+  label: offer.label.replace(/ /g, '\n'), // Add newlines for display
+  textColor: "#FFD700",
+  probability: offer.maxPerRound,
+}));
 
 const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSelectedResult }: SpinnerWheelProps) => {
   const [rotation, setRotation] = useState(0);
