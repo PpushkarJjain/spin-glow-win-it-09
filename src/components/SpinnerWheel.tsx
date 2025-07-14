@@ -40,7 +40,7 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
     if (isSpinning && preSelectedResult) {
       console.log('Starting animation for pre-selected result:', preSelectedResult);
       
-      const segmentAngle = 360 / segments.length;
+      const segmentAngle = 360 / segments.length; // 45 degrees per segment
       const winningIndex = segments.findIndex(s => s.id === preSelectedResult.id);
       
       if (winningIndex === -1) {
@@ -48,17 +48,30 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
         return;
       }
       
-      // Calculate target angle (arrow points to top, so we need to adjust)
-      const targetAngle = (winningIndex * segmentAngle) + (segmentAngle / 2);
-      const spins = 5 + Math.random() * 3; // Random number of full spins for visual effect
-      const finalRotation = (spins * 360) - targetAngle;
+      // Calculate target angle - arrow points up (0°), segments start at top and go clockwise
+      // We want the winning segment's center to align with the arrow at the top
+      const segmentCenterAngle = winningIndex * segmentAngle + (segmentAngle / 2);
       
-      setRotation(prev => prev + finalRotation);
+      // Add multiple full rotations for visual effect (5-8 spins)
+      const extraSpins = 5 + Math.random() * 3;
+      const totalRotation = (extraSpins * 360) + segmentCenterAngle;
       
-      // Call onSpinComplete after animation duration (3 seconds)
+      setRotation(prev => prev + totalRotation);
+      
+      // After animation, calculate which segment actually ended up at the pointer
       setTimeout(() => {
-        console.log('Animation complete, calling onSpinComplete with:', preSelectedResult);
-        onSpinComplete(preSelectedResult);
+        // Get final rotation angle (mod 360 to normalize)
+        const finalAngle = totalRotation % 360;
+        
+        // Calculate which segment is at the top pointer (0°)
+        // Since segments go clockwise and we need to account for rotation direction
+        const actualSegmentIndex = Math.floor((360 - finalAngle + (segmentAngle / 2)) / segmentAngle) % segments.length;
+        const actualWinningSegment = segments[actualSegmentIndex];
+        
+        console.log('Final angle:', finalAngle, 'Actual segment index:', actualSegmentIndex, 'Actual winning segment:', actualWinningSegment);
+        
+        // Use the actual visually aligned segment for the result
+        onSpinComplete(actualWinningSegment);
       }, 3000);
     }
   }, [isSpinning, preSelectedResult, onSpinComplete]);
