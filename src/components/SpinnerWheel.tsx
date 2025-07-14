@@ -75,10 +75,10 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart }: Spin
   const conicGradient = segments.map((segment, index) => `${segment.color} ${index * segmentAngle}deg ${(index + 1) * segmentAngle}deg`).join(", ");
 
   return (
-    <div className="relative w-full max-w-md mx-auto px-4">
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 z-20">
-        <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[25px] border-l-transparent border-r-transparent border-b-yellow-400 filter drop-shadow-lg"></div>
-        <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-b-[20px] border-l-transparent border-r-transparent border-b-yellow-500"></div>
+    <div className="relative w-full max-w-md mx-auto px-4 flex justify-center items-center flex-col">
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-[8px] z-20">
+        <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[25px] border-l-transparent border-r-transparent border-t-yellow-400 filter drop-shadow-lg"></div>
+        <div className="absolute top-[-2px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-t-[20px] border-l-transparent border-r-transparent border-t-yellow-500"></div>
       </div>
       
       <div 
@@ -105,7 +105,7 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart }: Spin
               style={{ transform: `rotate(${angle}deg)` }}
             >
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-center w-1/2">
-                <div className="flex flex-col items-center space-y-1" style={{ transform: `translateY(20px) rotate(-90deg)` }}>
+                <div className="flex flex-col items-center space-y-1" style={{ transform: `translateY(20px)` }}>
                   <div className="text-yellow-400 font-bold text-sm whitespace-pre-line">{segment.label}</div>
                   <div className="text-yellow-300">{segment.icon}</div>
                 </div>
