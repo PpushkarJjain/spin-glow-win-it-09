@@ -161,14 +161,14 @@ export async function recordSpin(
  */
 async function initializeNextRound(roundNumber: number): Promise<void> {
   const initialOffers = [
-    { segment_number: 1, label: '10% OFF', max_per_round: 25 },
-    { segment_number: 2, label: '2% OFF', max_per_round: 20 },
-    { segment_number: 3, label: '0.50g silver coin', max_per_round: 15 },
-    { segment_number: 4, label: '1 Gold Coin', max_per_round: 5 },
-    { segment_number: 5, label: '15% OFF', max_per_round: 15 },
-    { segment_number: 6, label: '5% OFF', max_per_round: 15 },
-    { segment_number: 7, label: '10% OFF Premium', max_per_round: 3 },
-    { segment_number: 8, label: '50% OFF', max_per_round: 2 }
+    { segment_number: 1, label: "0.50g Silver Coin", max_per_round: 25 },
+    { segment_number: 2, label: "1g Silver Coin", max_per_round: 20 },
+    { segment_number: 3, label: "2g Silver Coin", max_per_round: 15 },
+    { segment_number: 4, label: "5g Silver Coin", max_per_round: 5 },
+    { segment_number: 5, label: "Service upto 200rs", max_per_round: 15 },
+    { segment_number: 6, label: "5% Flat off", max_per_round: 15 },
+    { segment_number: 7, label: "10% Flat off", max_per_round: 3 },
+    { segment_number: 8, label: "12% Flat off", max_per_round: 2 }
   ];
 
   const { error } = await supabase

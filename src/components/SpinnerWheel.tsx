@@ -21,14 +21,14 @@ interface SpinnerWheelProps {
 }
 
 const segments: SpinnerSegment[] = [
-    { id: 1, label: "10%\nOFF", color: "rgb(220, 38, 38)", textColor: "#FFD700", probability: 25, icon: <Percent className="w-4 h-4" /> },
-    { id: 2, label: "2%\nOFF", color: "rgb(5, 150, 105)", textColor: "#FFD700", probability: 20, icon: <Percent className="w-4 h-4" /> },
-    { id: 3, label: "0.50g\nsilver\ncoin", color: "rgb(234, 88, 12)", textColor: "#FFD700", probability: 15, icon: <Coins className="w-4 h-4" /> },
-    { id: 4, label: "1G\nsilver\ncoin", color: "rgb(30, 64, 175)", textColor: "#FFD700", probability: 5, icon: <Coins className="w-4 h-4" /> },
-    { id: 5, label: "15%\nOFF", color: "rgb(124, 58, 237)", textColor: "#FFD700", probability: 15, icon: <Percent className="w-4 h-4" /> },
-    { id: 6, label: "5%\nOFF", color: "rgb(220, 38, 38)", textColor: "#FFD700", probability: 15, icon: <Percent className="w-4 h-4" /> },
-    { id: 7, label: "10%\nOFF", color: "rgb(5, 150, 105)", textColor: "#FFD700", probability: 3, icon: <Gift className="w-4 h-4" /> },
-    { id: 8, label: "50%\nOFF", color: "rgb(30, 64, 175)", textColor: "#FFD700", probability: 2, icon: <Star className="w-4 h-4" /> },
+    { id: 1, label: "0.50g\nSilver\nCoin", color: "rgb(220, 38, 38)", textColor: "#FFD700", probability: 25, icon: <Coins className="w-4 h-4" /> },
+    { id: 2, label: "1g\nSilver\nCoin", color: "rgb(5, 150, 105)", textColor: "#FFD700", probability: 20, icon: <Coins className="w-4 h-4" /> },
+    { id: 3, label: "2g\nSilver\nCoin", color: "rgb(234, 88, 12)", textColor: "#FFD700", probability: 15, icon: <Coins className="w-4 h-4" /> },
+    { id: 4, label: "5g\nSilver\nCoin", color: "rgb(30, 64, 175)", textColor: "#FFD700", probability: 5, icon: <Coins className="w-4 h-4" /> },
+    { id: 5, label: "Service\nupto\n200rs", color: "rgb(124, 58, 237)", textColor: "#FFD700", probability: 15, icon: <Gift className="w-4 h-4" /> },
+    { id: 6, label: "5%\nFlat off", color: "rgb(220, 38, 38)", textColor: "#FFD700", probability: 15, icon: <Percent className="w-4 h-4" /> },
+    { id: 7, label: "10%\nFlat off", color: "rgb(5, 150, 105)", textColor: "#FFD700", probability: 3, icon: <Percent className="w-4 h-4" /> },
+    { id: 8, label: "12%\nFlat off", color: "rgb(30, 64, 175)", textColor: "#FFD700", probability: 2, icon: <Percent className="w-4 h-4" /> },
 ];
 
 const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSelectedResult }: SpinnerWheelProps) => {
