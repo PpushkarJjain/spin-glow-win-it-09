@@ -69,40 +69,12 @@ const SpinnerPage = () => {
     navigate("/admin");
   }, [navigate]);
 
-  const handleSpinComplete = useCallback(async (result: SpinnerSegment) => {
-    console.log(`Spin animation completed. Winning segment: ${result.label}`);
-    setSpinResult(result);
+  const handleSpinComplete = useCallback((result: SpinnerSegment) => {
+    console.log(`Spin animation completed: ${result.label} for user ${currentUser?.name}`);
+    setIsSpinning(false);
     setShowResult(true);
     setHasSpun(true);
-    setIsSpinning(false);
-
-    if (currentUser) {
-      try {
-        // Find the corresponding offer in the database
-        const offerToRecord = {
-          id: result.id,
-          label: result.label,
-          value: result.label, // Add the missing 'value' property
-          color: result.color,
-        };
-        
-        // Record the spin in the database
-        await recordSpin(currentUser.id, offerToRecord);
-        console.log(`Spin recorded for user ${currentUser.name}`);
-        
-        // Update local state
-        setCanSpin(false);
-        setTotalSpins(prev => prev + 1);
-      } catch (error) {
-        console.error('Error recording spin:', error);
-        toast({
-          title: "Error",
-          description: "Failed to record spin. Please try again.",
-          variant: "destructive",
-        });
-      }
-    }
-  }, [currentUser, toast]);
+  }, [currentUser]);
 
   const handleSpinStart = useCallback(async () => {
     if (!currentUser || !canSpin || hasSpun) {
@@ -120,6 +92,36 @@ const SpinnerPage = () => {
     
     console.log(`Starting spin for user: ${currentUser.name}`);
     setIsSpinning(true);
+
+    try {
+      const selectedOffer = await selectRandomOffer();
+      console.log('Selected offer from database:', selectedOffer);
+      
+      const uiResult: SpinnerSegment = {
+        id: selectedOffer.id,
+        label: selectedOffer.label,
+        color: selectedOffer.color,
+        textColor: "#FFD700",
+        probability: 0,
+        icon: getIconForSegment(selectedOffer.id)
+      };
+      
+      setSpinResult(uiResult);
+      
+      await recordSpin(currentUser.id, selectedOffer);
+      
+      setCanSpin(false);
+      setTotalSpins(prev => prev + 1);
+      
+    } catch (error) {
+      console.error('Error during spin:', error);
+      setIsSpinning(false);
+      toast({
+        title: "Error",
+        description: "Error processing spin. Please try again.",
+        variant: "destructive",
+      });
+    }
   }, [currentUser, canSpin, hasSpun, isSpinning, toast]);
 
   // Helper function to get icon for segment
@@ -166,6 +168,7 @@ const SpinnerPage = () => {
           isSpinning={isSpinning}
           canSpin={canSpin && !hasSpun}
           onSpinStart={handleSpinStart}
+          preSelectedResult={spinResult}
         />
         
         <SpinnerActions

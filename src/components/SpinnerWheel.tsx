@@ -17,6 +17,7 @@ interface SpinnerWheelProps {
   isSpinning: boolean;
   canSpin: boolean;
   onSpinStart: () => void;
+  preSelectedResult?: SpinnerSegment | null;
 }
 
 const segments: SpinnerSegment[] = [
@@ -30,43 +31,30 @@ const segments: SpinnerSegment[] = [
     { id: 8, label: "50%\nOFF", color: "rgb(30, 64, 175)", textColor: "#FFD700", probability: 2, icon: <Star className="w-4 h-4" /> },
 ];
 
-const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart }: SpinnerWheelProps) => {
+const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSelectedResult }: SpinnerWheelProps) => {
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
 
-  // This function is called when the spin animation completes
-  const handleTransitionEnd = () => {
-    console.log("Spin animation finished.");
-    const wheel = wheelRef.current;
-    if (!wheel) return;
-
-    // Make rotation a multiple of 360 to ensure correct calculation
-    const currentRotation = rotation % 360;
-    const segmentAngle = 360 / segments.length;
-    
-    // Calculate the winning segment index based on the final angle
-    const winningIndex = Math.floor((360 - currentRotation + segmentAngle / 2) % 360 / segmentAngle);
-    const winningSegment = segments[winningIndex];
-    
-    console.log(`Final rotation: ${currentRotation}°, Winning segment:`, winningSegment);
-    
-    // Pass the actual winning segment to the parent
-    onSpinComplete(winningSegment);
-  };
-
-  // This effect triggers the spin animation
   useEffect(() => {
-    if (isSpinning) {
-      console.log("isSpinning is true, starting animation.");
-      // Add multiple full rotations for visual effect
-      const newRotation = rotation + 360 * 5 + Math.random() * 360;
-      setRotation(newRotation);
+    if (isSpinning && preSelectedResult) {
+      const segmentAngle = 360 / segments.length;
+      const winningIndex = segments.findIndex(s => s.id === preSelectedResult.id);
+      
+      if (winningIndex === -1) return;
+
+      const targetAngle = (winningIndex * segmentAngle) + (segmentAngle / 2);
+      const finalRotation = (360 * 5) + (360 - targetAngle);
+      
+      setRotation(finalRotation);
+      
+      setTimeout(() => {
+        onSpinComplete(preSelectedResult);
+      }, 3000);
     }
-  }, [isSpinning]);
+  }, [isSpinning, preSelectedResult, onSpinComplete]);
 
   const handleSpinClick = () => {
     if (isSpinning || !canSpin) return;
-    console.log('Spin button clicked, starting spin process');
     onSpinStart();
   };
 
@@ -76,17 +64,16 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart }: Spin
   return (
     <div className="relative w-full max-w-md mx-auto px-4 flex justify-center items-center flex-col">
       {/* Arrow pointer */}
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-[8px] z-20">
+      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-30">
         <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[25px] border-l-transparent border-r-transparent border-t-yellow-400 filter drop-shadow-lg"></div>
         <div className="absolute top-[-2px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-t-[20px] border-l-transparent border-r-transparent border-t-yellow-500"></div>
       </div>
       
       {/* Spinner wheel */}
-      <div 
+      <div
         ref={wheelRef}
         className="relative w-80 h-80 rounded-full border-8 border-yellow-400 shadow-2xl transition-transform duration-3000 ease-out"
         style={{ background: `conic-gradient(from 0deg, ${conicGradient})`, transform: `rotate(${rotation}deg)` }}
-        onTransitionEnd={handleTransitionEnd}
       >
         {/* LED lights around the rim */}
         <div className="absolute inset-0 rounded-full">
