@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { getSystemState } from '@/services/systemService';
 import { getOfferStats, resetAllCounters, getTotalUsers } from '@/services/adminService';
+import AdminPasswordModal from '@/components/AdminPasswordModal';
 
 interface OfferStats {
   name: string;
@@ -23,13 +24,46 @@ const AdminPage = () => {
   const [offerStats, setOfferStats] = useState<OfferStats[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isResetting, setIsResetting] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    loadAdminData();
+    checkAuthentication();
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadAdminData();
+    }
+  }, [isAuthenticated]);
+
+  const checkAuthentication = () => {
+    const authExpiry = sessionStorage.getItem('admin_auth_expiry');
+    
+    if (authExpiry && Date.now() < parseInt(authExpiry)) {
+      // Valid authentication found
+      setIsAuthenticated(true);
+      setIsLoading(false);
+    } else {
+      // No valid auth, clear any expired session and show password modal
+      sessionStorage.removeItem('admin_auth_expiry');
+      setIsAuthenticated(false);
+      setShowPasswordModal(true);
+      setIsLoading(false);
+    }
+  };
+
+  const handlePasswordCorrect = () => {
+    setIsAuthenticated(true);
+    setShowPasswordModal(false);
+  };
+
+  const handlePasswordCancel = () => {
+    navigate(-1); // Go back to previous page
+  };
 
   const loadAdminData = async () => {
     try {
@@ -97,6 +131,19 @@ const AdminPage = () => {
       <div className="min-h-screen bg-festive-gradient flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
       </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <div className="min-h-screen bg-festive-gradient"></div>
+        <AdminPasswordModal
+          isOpen={showPasswordModal}
+          onPasswordCorrect={handlePasswordCorrect}
+          onCancel={handlePasswordCancel}
+        />
+      </>
     );
   }
 
