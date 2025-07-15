@@ -2,16 +2,14 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { getSystemState, updateSystemState } from "./systemService";
 import { getOfferSegments, updateOfferSegmentCount } from "./adminService";
-import { offerConfig } from "@/config/offerConfig.tsx";
+import { offerConfig, type Offer } from "@/config/offerConfig.tsx";
 
 type Spin = Database['public']['Tables']['spins']['Row'];
 type SpinInsert = Database['public']['Tables']['spins']['Insert'];
 
-export interface SpinnerSegment {
-  id: number;
-  label: string;
-  value: string;
-  color: string;
+export interface SpinnerSegment extends Offer {
+  textColor: string;
+  probability: number;
 }
 
 /**
@@ -47,12 +45,16 @@ export async function getAvailableOffers(): Promise<SpinnerSegment[]> {
   
   return offerSegments
     .filter(segment => segment.current_count < segment.max_per_round)
-    .map(segment => ({
-      id: segment.segment_number,
-      label: segment.label,
-      value: segment.label,
-      color: getSegmentColor(segment.segment_number)
-    }));
+    .map(segment => {
+      const offer = offerConfig.find(o => o.id === segment.segment_number);
+      if (!offer) throw new Error(`Offer config not found for segment ${segment.segment_number}`);
+      
+      return {
+        ...offer,
+        textColor: "#FFD700",
+        probability: offer.maxPerRound
+      };
+    });
 }
 
 /**
@@ -94,11 +96,15 @@ export async function selectRandomOffer(): Promise<SpinnerSegment> {
     throw new Error('Failed to select offer segment');
   }
 
+  const offer = offerConfig.find(o => o.id === selectedSegment.segment_number);
+  if (!offer) {
+    throw new Error(`Offer config not found for segment ${selectedSegment.segment_number}`);
+  }
+
   return {
-    id: selectedSegment.segment_number,
-    label: selectedSegment.label,
-    value: selectedSegment.label,
-    color: getSegmentColor(selectedSegment.segment_number)
+    ...offer,
+    textColor: "#FFD700",
+    probability: offer.maxPerRound
   };
 }
 
@@ -121,7 +127,7 @@ export async function recordSpin(
       user_id: userId,
       segment_id: result.id,
       offer_label: result.label,
-      spin_result: result.value,
+      spin_result: result.label,
       round_number: currentRound,
       spin_number_in_round: spinsInCurrentRound + 1,
       total_spin_number: totalSpins + 1
