@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ArrowLeft, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -93,14 +94,14 @@ const AdminPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-festive flex items-center justify-center">
+      <div className="min-h-screen bg-festive-gradient flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-festive p-4 font-poppins">
+    <div className="min-h-screen bg-festive-gradient p-4 font-poppins">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <Button

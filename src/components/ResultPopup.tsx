@@ -16,7 +16,6 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     if (isOpen && result) {
       setShowConfetti(true);
@@ -33,7 +32,6 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
     onClose();
     navigate("/");
   };
-
 
   if (!result) return null;
 
@@ -59,7 +57,7 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
       )}
       
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md bg-gradient-festive border-4 border-primary">
+        <DialogContent className="sm:max-w-md bg-festive-gradient border-4 border-primary">
           <DialogHeader>
             <DialogTitle className="text-center text-white font-playfair text-2xl">
               🎊 CONGRATULATIONS! 🎊
@@ -95,7 +93,6 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
             </div>
             
             {/* Next Player Button */}
-
             <Button
               onClick={handleNextPlayer}
               className="w-full py-4 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
