@@ -17,5 +17,5 @@ export const offerConfig: Offer[] = [
   { id: 5, label: "Service upto 200rs", maxPerRound: 15, color: "rgb(124, 58, 237)", icon: <Gift className="w-4 h-4" /> },
   { id: 6, label: "5% Flat off", maxPerRound: 15, color: "rgb(220, 38, 38)", icon: <Percent className="w-4 h-4" /> },
   { id: 7, label: "10% Flat off", maxPerRound: 3, color: "rgb(5, 150, 105)", icon: <Percent className="w-4 h-4" /> },
-  { id: 8, label: "12% Flat off", maxPerRound: 2, color: "rgb(30, 64, 175)", icon: <Percent className="w-4 h-4" /> },
+  { id: 8, label: "8% Flat off", maxPerRound: 2, color: "rgb(30, 64, 175)", icon: <Percent className="w-4 h-4" /> },
 ];
