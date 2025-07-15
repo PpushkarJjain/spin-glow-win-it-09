@@ -12,23 +12,29 @@ interface ResultPopupProps {
   result: SpinnerSegment | null;
 }
 
+// ResultPopup component displays the prize won by the user in a modal.
 const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
+  // State to control the confetti animation visibility.
   const [showConfetti, setShowConfetti] = useState(false);
   const navigate = useNavigate();
 
+  // Effect to trigger confetti animation when the popup is opened with a result.
   useEffect(() => {
+    console.log("ResultPopup: useEffect triggered", { isOpen, result });
     if (isOpen && result) {
       setShowConfetti(true);
-      // Hide confetti after animation
+      // Hide confetti after a 3-second animation duration.
       setTimeout(() => setShowConfetti(false), 3000);
     }
   }, [isOpen, result]);
 
+  // Handles the action for the next player, clearing the session and navigating to the home page.
   const handleNextPlayer = () => {
-    // Clear current user session for next player
+    console.log("ResultPopup: handleNextPlayer called");
+    // Clear current user session for the next player.
     localStorage.removeItem("currentUser");
     
-    // Close popup and redirect to form page
+    // Close the popup and redirect to the form page.
     onClose();
     navigate("/");
   };
@@ -57,27 +63,27 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
       )}
       
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-md bg-festive-gradient border-4 border-primary">
+        <DialogContent className="w-[90vw] max-w-sm rounded-lg sm:max-w-md bg-festive-gradient border-4 border-primary">
           <DialogHeader>
-            <DialogTitle className="text-center text-white font-playfair text-2xl">
+            <DialogTitle className="text-center text-white font-playfair text-xl sm:text-2xl">
               🎊 CONGRATULATIONS! 🎊
             </DialogTitle>
           </DialogHeader>
           
-          <div className="text-center space-y-6 py-6">
+          <div className="text-center space-y-4 sm:space-y-6 py-4 sm:py-6">
             {/* Prize Display */}
-            <div className="bg-white/90 rounded-xl p-6 shadow-festive">
+            <div className="bg-white/90 rounded-xl p-4 sm:p-6 shadow-festive">
               <div className="flex items-center justify-center mb-4">
-                <Gift className="h-12 w-12 text-primary mr-3" />
-                <Sparkles className="h-8 w-8 text-accent animate-pulse" />
+                <Gift className="h-10 w-10 sm:h-12 sm:w-12 text-primary mr-3" />
+                <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-accent animate-pulse" />
               </div>
               
-              <h3 className="text-2xl font-bold text-secondary mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-secondary mb-2">
                 You Won!
               </h3>
               
               <div 
-                className="text-3xl font-bold py-4 px-6 rounded-lg shadow-inner"
+                className="text-2xl sm:text-3xl font-bold py-3 px-4 sm:py-4 sm:px-6 rounded-lg shadow-inner"
                 style={{ 
                   backgroundColor: result.color,
                   color: result.textColor,
@@ -87,7 +93,7 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
                 {result.label}
               </div>
               
-              <p className="text-sm text-muted-foreground mt-4">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-4">
                 Your reward has been logged and can be claimed at the store!
               </p>
             </div>
@@ -95,7 +101,7 @@ const ResultPopup = ({ isOpen, onClose, result }: ResultPopupProps) => {
             {/* Next Player Button */}
             <Button
               onClick={handleNextPlayer}
-              className="w-full py-4 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
+              className="w-full py-3 text-base sm:py-4 sm:text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
               size="lg"
             >
               🎉 Next Player 🎉

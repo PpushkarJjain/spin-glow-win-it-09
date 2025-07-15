@@ -115,8 +115,7 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
         >
           {isSpinning ? "SPINNING..." : "🎯 SPIN NOW 🎯"}
         </Button>
-        {!canSpin && <p className="text-white/80 text-sm">Already played today! Come back tomorrow</p>}
-        {canSpin && !isSpinning && <p className="text-white/70 text-sm">Tap to spin and win exciting prizes!</p>}
+        
       </div>
     </div>
   );

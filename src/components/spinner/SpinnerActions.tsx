@@ -18,7 +18,7 @@ const SpinnerActions: React.FC<SpinnerActionsProps> = ({
 }) => {
   if (hasSpun && !showResult) {
     return (
-      <div className="mt-8 text-center">
+      <div className="mt-4 text-center">
         <Button
           onClick={onNextPlayer}
           className="px-8 py-4 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
@@ -26,7 +26,6 @@ const SpinnerActions: React.FC<SpinnerActionsProps> = ({
         >
           🎉 Next Player 🎉
         </Button>
-        <p className="text-white/90 text-sm mt-2">Ready for the next participant!</p>
       </div>
     );
   }

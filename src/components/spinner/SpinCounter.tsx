@@ -7,7 +7,7 @@ interface SpinCounterProps {
 
 const SpinCounter: React.FC<SpinCounterProps> = ({ totalSpins, currentRound }) => {
   return (
-    <div className="absolute bottom-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-primary/20">
+    <div className="mt-4 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg border border-primary/20">
       <p className="text-xs font-medium text-secondary">Total Spins</p>
       <p className="text-xl font-bold text-primary">{totalSpins}</p>
       <p className="text-xs text-muted-foreground">Round {currentRound + 1}</p>
