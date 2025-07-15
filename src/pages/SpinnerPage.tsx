@@ -12,6 +12,7 @@ import LoadingSpinner from "@/components/spinner/LoadingSpinner";
 import SpinnerPageHeader from "@/components/spinner/SpinnerPageHeader";
 import SpinnerActions from "@/components/spinner/SpinnerActions";
 import SpinCounter from "@/components/spinner/SpinCounter";
+import { Button } from "@/components/ui/button";
 import { Coins, Gift, Percent, Star } from "lucide-react";
 
 const SpinnerPage = () => {
@@ -82,6 +83,10 @@ const SpinnerPage = () => {
 
   const handleAdminAccess = useCallback(() => {
     navigate("/admin");
+  }, [navigate]);
+
+  const handleBrandClick = useCallback(() => {
+    navigate("/");
   }, [navigate]);
 
   const handleSpinComplete = useCallback((result: SpinnerSegment) => {
@@ -178,9 +183,9 @@ const SpinnerPage = () => {
 
   return (
     <div className="min-h-screen bg-festive-gradient font-poppins">
-      <SpinnerPageHeader onAdminAccess={handleAdminAccess} />
+      <SpinnerPageHeader />
 
-      <div className="flex flex-col items-center justify-center min-h-[80vh] p-4">
+      <div className="flex flex-col items-center justify-center min-h-[80vh] p-2 sm:p-4 w-full">
         <SpinnerWheel 
           onSpinComplete={handleSpinComplete}
           isSpinning={isSpinning}
@@ -197,7 +202,19 @@ const SpinnerPage = () => {
           onNextPlayer={handleNextPlayer}
         />
 
-        <SpinCounter totalSpins={totalSpins} currentRound={currentRound} />
+        <div className="flex flex-col sm:flex-row justify-between items-center w-full max-w-xs sm:max-w-sm md:max-w-md mt-4 gap-2 sm:gap-4">
+          <SpinCounter totalSpins={totalSpins} currentRound={currentRound} />
+          <Button
+            onClick={handleBrandClick}
+            variant="link"
+            className="font-playfair text-yellow-400 text-lg tracking-wide drop-shadow-lg hover:text-yellow-300 w-full sm:w-auto"
+          >
+            ShreeDhan Jewellers
+          </Button>
+          <Button onClick={handleAdminAccess} variant="outline" className="w-full sm:w-auto">
+            Admin
+          </Button>
+        </div>
       </div>
       
       <ResultPopup 
