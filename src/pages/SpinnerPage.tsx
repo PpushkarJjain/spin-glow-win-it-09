@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { SpinnerWheel } from "@/components/SpinnerWheel";
 import type { SpinnerSegment } from "@/components/SpinnerWheel";
-import ResultPopup from "@/components/ResultPopup";
+import NewResultPopup from "@/components/NewResultPopup";
 import { useToast } from "@/hooks/use-toast";
 import { getCurrentUserSession, getUserById, type UserSession } from '@/services/userService';
 import { canUserSpin, recordSpin, selectRandomOffer } from '@/services/spinService';
@@ -217,7 +217,7 @@ const SpinnerPage = () => {
         </div>
       </div>
       
-      <ResultPopup 
+      <NewResultPopup 
         isOpen={showResult}
         onClose={handleCloseResult}
         result={spinResult}
