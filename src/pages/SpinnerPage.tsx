@@ -5,7 +5,7 @@ import { SpinnerWheel } from "@/components/SpinnerWheel";
 import type { SpinnerSegment } from "@/components/SpinnerWheel";
 import ResultPopup from "@/components/ResultPopup";
 import { useToast } from "@/hooks/use-toast";
-import { getCurrentUserSession, type UserSession } from '@/services/userService';
+import { getCurrentUserSession, getUserById, type UserSession } from '@/services/userService';
 import { canUserSpin, recordSpin, selectRandomOffer } from '@/services/spinService';
 import { getSystemState } from '@/services/systemService';
 import LoadingSpinner from "@/components/spinner/LoadingSpinner";
@@ -34,6 +34,21 @@ const SpinnerPage = () => {
       const user = getCurrentUserSession();
       if (!user) {
         console.log("No user session found, redirecting to form");
+        navigate("/");
+        return;
+      }
+      
+      // Verify user data exists in database
+      try {
+        const dbUser = await getUserById(user.id);
+        if (!dbUser || !dbUser.name || !dbUser.mobile) {
+          console.log("User data not found in database, redirecting to form");
+          navigate("/");
+          return;
+        }
+        console.log("User data validated from database:", dbUser.name);
+      } catch (error) {
+        console.error("Error validating user from database:", error);
         navigate("/");
         return;
       }
@@ -105,6 +120,7 @@ const SpinnerPage = () => {
         color: selectedOffer.color,
         textColor: "#FFD700",
         probability: 0,
+        maxPerRound: selectedOffer.maxPerRound,
         icon: getIconForSegment(selectedOffer.id)
       };
       
