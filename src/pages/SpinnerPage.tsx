@@ -182,7 +182,7 @@ const SpinnerPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-festive-gradient font-poppins">
+    <div className="min-h-screen bg-festive-gradient font-poppins overflow-x-hidden">
       <SpinnerPageHeader />
 
       <div className="flex flex-col items-center justify-center min-h-[80vh] p-2 sm:p-4 w-full">
