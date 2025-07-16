@@ -122,6 +122,13 @@ const FormPage = () => {
                 {isLoading ? "Please Wait..." : "Start Spinning"}
               </Button>
             </form>
+            <div className="mt-4 pt-2 text-sm text-muted-foreground">
+              <ul className="space-y-2">
+                <li>* Offer valid till Janmashtami</li>
+                <li>* Each customer will get one chance to spin the wheel for purchase of ₹5,000 (silver) or ₹15,000 (gold)</li>
+                <li>* For gold purchases, the discount percentage will apply only on labour charges</li>
+              </ul>
+            </div>
           </CardContent>
         </Card>
       </div>
