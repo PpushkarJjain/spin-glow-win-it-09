@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { SpinnerWheel } from "@/components/SpinnerWheel";
@@ -13,7 +12,7 @@ import SpinnerPageHeader from "@/components/spinner/SpinnerPageHeader";
 import SpinnerActions from "@/components/spinner/SpinnerActions";
 import SpinCounter from "@/components/spinner/SpinCounter";
 import { Button } from "@/components/ui/button";
-import { Coins, Gift, Percent, Star } from "lucide-react";
+import { Coins, Gift, Percent, Star, UserCog } from "lucide-react";
 
 const SpinnerPage = () => {
   const [isSpinning, setIsSpinning] = useState(false);
@@ -202,18 +201,39 @@ const SpinnerPage = () => {
           onNextPlayer={handleNextPlayer}
         />
 
-        <div className="flex flex-col sm:flex-row justify-between items-center w-full max-w-xs sm:max-w-sm md:max-w-md mt-4 gap-2 sm:gap-4">
-          <SpinCounter totalSpins={totalSpins} currentRound={currentRound} />
+        <div className="flex items-center justify-between w-full max-w-lg mx-auto mt-6 sm:gap-x-6 h-16 ">
+          {/* Left: Total Spins */}
+          <div className="flex-1 min-w-[95px] flex items-center justify-center h-full">
+            <SpinCounter totalSpins={totalSpins} currentRound={currentRound} />
+          </div>
+
+          {/* Center: Brand */}
           <Button
             onClick={handleBrandClick}
             variant="link"
-            className="font-playfair text-yellow-400 text-lg tracking-wide drop-shadow-lg hover:text-yellow-300 w-full sm:w-auto"
+            className="flex-[2] w-full sm:w-auto h-full flex items-center justify-center font-playfair font-bold uppercase text-yellow-400 tracking-wider text-xl sm:text-2xl text-center drop-shadow-lg hover:text-yellow-300 transition-colors"
+            style={{ letterSpacing: "0.08em" }}
+            tabIndex={-1}
+            asChild
           >
-            ShreeDhan Jewellers
+            <span className="flex flex-col items-center justify-center leading-tight">
+              <span>ShreeDhan</span>
+              <span>Jwellers</span>
+            </span>
           </Button>
-          <Button onClick={handleAdminAccess} variant="outline" className="w-full sm:w-auto">
-            Admin
-          </Button>
+
+          {/* Right: Admin Icon */}
+          <div className="flex-1 flex items-center justify-end h-full">
+            <Button
+              onClick={handleAdminAccess}
+              variant="outline"
+              size="icon"
+              className="rounded-md w-20 h-20 "
+            >
+              <UserCog className="w-16 h-16" />
+              <span className="sr-only">Admin</span>
+            </Button>
+          </div>
         </div>
       </div>
       
