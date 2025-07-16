@@ -211,7 +211,7 @@ const SpinnerPage = () => {
           <Button
             onClick={handleBrandClick}
             variant="link"
-            className="flex-[2] w-full sm:w-auto h-full flex items-center justify-center font-playfair font-bold uppercase text-yellow-400 tracking-wider text-xl sm:text-2xl text-center drop-shadow-lg hover:text-yellow-300 transition-colors"
+            className="flex-[2] px-2 h-full flex items-center justify-center font-playfair font-bold uppercase text-yellow-400 tracking-wider text-xl sm:text-2xl text-center drop-shadow-lg hover:text-yellow-300 transition-colors"
             style={{ letterSpacing: "0.08em" }}
             tabIndex={-1}
             asChild
@@ -228,7 +228,7 @@ const SpinnerPage = () => {
               onClick={handleAdminAccess}
               variant="outline"
               size="icon"
-              className="rounded-md w-20 h-20 "
+              className="rounded-md w-20 h-20 bg-white/20"
             >
               <UserCog className="w-16 h-16" />
               <span className="sr-only">Admin</span>

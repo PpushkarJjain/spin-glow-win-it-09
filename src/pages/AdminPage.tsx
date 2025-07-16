@@ -157,7 +157,7 @@ const AdminPage = () => {
           className="text-white hover:bg-white/20"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to Spinner
+          
         </Button>
         
         <h1 className="text-2xl font-bold text-white font-playfair">
@@ -171,7 +171,7 @@ const AdminPage = () => {
           className="bg-red-600 hover:bg-red-700"
         >
           <RotateCcw className="h-4 w-4 mr-2" />
-          {isResetting ? 'Resetting...' : 'Reset All'}
+          {isResetting ? 'Resetting...' : ''}
         </Button>
       </div>
 
