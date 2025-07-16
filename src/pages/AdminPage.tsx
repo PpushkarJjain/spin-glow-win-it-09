@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, RotateCcw } from "lucide-react";
+import { ArrowLeft, RotateCcw, Trash, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -170,7 +170,7 @@ const AdminPage = () => {
           variant="destructive"
           className="bg-red-600 hover:bg-red-700"
         >
-          <RotateCcw className="h-4 w-4 mr-2" />
+          <Trash2Icon className="h-4 w-4 mr-2" />
           {isResetting ? 'Resetting...' : ''}
         </Button>
       </div>
