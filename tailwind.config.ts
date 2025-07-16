@@ -73,6 +73,7 @@ export default {
 					purple: 'hsl(var(--spinner-purple))',
 					blue: 'hsl(var(--spinner-blue))',
 				},
+				'brand-yellow': '#FEF08A',
 			},
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
