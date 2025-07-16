@@ -251,6 +251,7 @@ const SpinnerPage = () => {
         isOpen={showResult}
         onClose={handleCloseResult}
         result={spinResult}
+        audioManager={audioManager}
       />
     </div>
   );

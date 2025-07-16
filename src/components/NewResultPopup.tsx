@@ -1,3 +1,4 @@
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,15 +12,30 @@ import {
 import { SpinnerSegment } from "./SpinnerWheel";
 import { Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import type { AudioManager } from "@/hooks/useAudioManager";
 
 interface NewResultPopupProps {
   isOpen: boolean;
   onClose: () => void;
   result: SpinnerSegment | null;
+  audioManager: AudioManager;
 }
 
-const NewResultPopup = ({ isOpen, onClose, result }: NewResultPopupProps) => {
+const NewResultPopup = ({ isOpen, onClose, result, audioManager }: NewResultPopupProps) => {
   const navigate = useNavigate();
+
+  // Play winning sound when popup opens
+  useEffect(() => {
+    if (isOpen && result) {
+      // Small delay to let the popup animation start, then play the winning sound
+      const timer = setTimeout(() => {
+        audioManager.playWinSound();
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, result, audioManager]);
 
   const handleNextPlayer = () => {
     // Clear current user session for next player
