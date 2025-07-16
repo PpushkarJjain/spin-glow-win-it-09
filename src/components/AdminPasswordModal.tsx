@@ -16,7 +16,7 @@ const AdminPasswordModal = ({ isOpen, onPasswordCorrect, onCancel }: AdminPasswo
   const [error, setError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
 
-  const ADMIN_PASSWORD = "112345";
+  const ADMIN_PASSWORD = "987456";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
