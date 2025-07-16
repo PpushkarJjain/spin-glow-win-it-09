@@ -47,6 +47,8 @@
 
 | Date       | Feature/Update                                       | Notes or Context                                                              |
 | ---------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 2025-07-16 | Terms & Conditions and Admin UI (747796e, 1e2b028) | Added Terms & Conditions, and updated admin password timing and UI.           |
+| 2025-07-15 | UI and UX Refinements (0adf52c, 87391ae, cdf7413)    | Implemented a custom animated result popup, simplified navigation, and improved responsiveness. |
 | 2025-07-14 | Spinner Result Fix (6b2d70e)                         | Fixed mismatch between spinner result and popup reward.                       |
 | 2025-07-14 | State Management Cleanup (efd5c35)                   | Removed localStorage tracking and cleaned up state updates.                   |
 | 2025-07-14 | Spinner Animation and State Refactor (2d9d96e)       | Adjusted spin animation timing and cleaned up state management.               |
@@ -76,6 +78,13 @@
 *   **Code Refinements**:
     *   The project's Tailwind CSS configuration has been enhanced with updated gradient classes.
     *   The `SpinnerPage` and `SpinnerWheel` components have been refactored for better code organization and readability.
+*   **Terms & Conditions**:
+    *   Added a Terms & Conditions page to the application.
+*   **Admin Panel**:
+    *   The admin password expiry time has been updated.
+    *   The reset icon has been replaced with a trash icon for better clarity.
+*   **Result Popup**:
+    *   A new custom animated result popup has been implemented for a better user experience.
 
 #### 6. **AI Agent Guidance Notes (Optional)**
 

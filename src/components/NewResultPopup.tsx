@@ -39,10 +39,10 @@ const NewResultPopup = ({ isOpen, onClose, result }: NewResultPopupProps) => {
           <div className="flex justify-center items-center mb-4">
             <Gift className="h-16 w-16 text-yellow-300" />
           </div>
-          <AlertDialogTitle className="text-3xl font-playfair">
+          <AlertDialogTitle className="text-3xl font-playfair flex justify-center items-center">
             Congratulations!
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-white/80 text-base pt-2">
+          <AlertDialogDescription className="text-white/80 text-base pt-2 flex justify-center items-center">
             You've won a fantastic prize!
           </AlertDialogDescription>
         </AlertDialogHeader>
