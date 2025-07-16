@@ -13,6 +13,7 @@ import SpinnerActions from "@/components/spinner/SpinnerActions";
 import SpinCounter from "@/components/spinner/SpinCounter";
 import { Button } from "@/components/ui/button";
 import { Coins, Gift, Percent, Star, UserCog } from "lucide-react";
+import { useAudioManager } from "@/hooks/useAudioManager";
 
 const SpinnerPage = () => {
   const [isSpinning, setIsSpinning] = useState(false);
@@ -27,6 +28,7 @@ const SpinnerPage = () => {
   
   const navigate = useNavigate();
   const { toast } = useToast();
+  const audioManager = useAudioManager();
 
   // User session validation and data loading
   useEffect(() => {
@@ -65,6 +67,11 @@ const SpinnerPage = () => {
         const systemState = await getSystemState();
         setTotalSpins(parseInt(systemState.total_spins));
         setCurrentRound(parseInt(systemState.current_round));
+        
+        // Start background music after user interaction
+        if (audioManager.isLoaded) {
+          audioManager.playBackgroundMusic();
+        }
       } catch (error) {
         console.error('Error loading page data:', error);
         toast({
@@ -113,6 +120,9 @@ const SpinnerPage = () => {
     
     console.log(`Starting spin for user: ${currentUser.name}`);
     setIsSpinning(true);
+    
+    // Play spin sound effect
+    audioManager.playSpinSound();
 
     try {
       const selectedOffer = await selectRandomOffer();
@@ -182,7 +192,7 @@ const SpinnerPage = () => {
 
   return (
     <div className="min-h-screen bg-festive-gradient font-poppins overflow-x-hidden">
-      <SpinnerPageHeader />
+      <SpinnerPageHeader audioManager={audioManager} />
 
       <div className="flex flex-col items-center justify-center min-h-[80vh] p-2 sm:p-4 w-full">
         <SpinnerWheel 
