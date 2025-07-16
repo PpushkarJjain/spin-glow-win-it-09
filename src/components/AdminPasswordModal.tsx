@@ -33,7 +33,7 @@ const AdminPasswordModal = ({ isOpen, onPasswordCorrect, onCancel }: AdminPasswo
     setTimeout(() => {
       if (password === ADMIN_PASSWORD) {
         // Store auth with 30-minute expiry
-        const expiryTime = Date.now() + (30 * 60 * 1000); // 1 minutes
+        const expiryTime = Date.now() + (1 * 60 * 1000); // 1 minutes
         sessionStorage.setItem('admin_auth_expiry', expiryTime.toString());
         
         setPassword("");
