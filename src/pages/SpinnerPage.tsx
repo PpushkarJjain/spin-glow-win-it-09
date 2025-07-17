@@ -25,6 +25,7 @@ const SpinnerPage = () => {
   const [canSpin, setCanSpin] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [hasSpun, setHasSpun] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -68,10 +69,7 @@ const SpinnerPage = () => {
         setTotalSpins(parseInt(systemState.total_spins));
         setCurrentRound(parseInt(systemState.current_round));
         
-        // Start background music after user interaction
-        if (audioManager.isLoaded) {
-          audioManager.playBackgroundMusic();
-        }
+        // Background music will be handled by the user interaction effect
       } catch (error) {
         console.error('Error loading page data:', error);
         toast({
@@ -181,6 +179,13 @@ const SpinnerPage = () => {
     setSpinResult(null);
   }, []);
 
+  const handleStartExperience = () => {
+    if (audioManager.isLoaded) {
+      audioManager.playBackgroundMusic();
+    }
+    setShowOverlay(false);
+  };
+
   // Show loading if initializing
   if (isLoading) {
     return <LoadingSpinner />;
@@ -192,6 +197,18 @@ const SpinnerPage = () => {
 
   return (
     <div className="min-h-screen bg-festive-gradient font-poppins overflow-x-hidden">
+      {showOverlay && (
+        <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-50">
+          <h2 className="text-4xl font-bold text-white mb-4">Welcome!</h2>
+          {/* <p className="text-lg text-white/80 mb-8">Click below to start the experience with sound.</p> */}
+          <Button
+            onClick={handleStartExperience}
+            className="bg-gradient-primary hover:shadow-glow transition-all duration-300 text-lg font-bold uppercase px-8 py-4"
+          >
+            Let's spin!
+          </Button>
+        </div>
+      )}
       <SpinnerPageHeader audioManager={audioManager} />
 
       <div className="flex flex-col items-center justify-center min-h-[80vh] p-2 sm:p-4 w-full">

@@ -42,7 +42,7 @@ export const useAudioManager = (): AudioManager => {
         // Configure background music
         if (backgroundMusicRef.current) {
           backgroundMusicRef.current.loop = true;
-          backgroundMusicRef.current.volume = 0.3;
+          backgroundMusicRef.current.volume = 0.2;
         }
 
         // Configure sound effects
@@ -51,7 +51,7 @@ export const useAudioManager = (): AudioManager => {
         }
 
         if (winSoundRef.current) {
-          winSoundRef.current.volume = 0.7;
+          winSoundRef.current.volume = 1.0;
         }
 
         // Preload all audio files
