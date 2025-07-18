@@ -19,6 +19,9 @@ const SpinnerActions: React.FC<SpinnerActionsProps> = ({
   if (hasSpun && !showResult) {
     return (
       <div className="mt-4 text-center">
+          <div className="mb-2 text-center">
+            <p className="text-white/90 text-lg font-medium">Already played!</p>
+          </div>
         <Button
           onClick={onNextPlayer}
           className="px-8 py-4 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
@@ -29,15 +32,11 @@ const SpinnerActions: React.FC<SpinnerActionsProps> = ({
       </div>
     );
   }
-
-  if (!isSpinning && !canSpin && !hasSpun) {
-    return (
-      <div className="mt-4 text-center">
-        <p className="text-white/90 text-lg font-medium">Already played today!</p>
-        <p className="text-white/70 text-sm mt-1">Come back tomorrow for another chance</p>
-      </div>
-    );
-  }
+  
+  // if (!isSpinning && !canSpin && !hasSpun) {
+    //   return (
+  //   );
+  // }
 
   return null;
 };
