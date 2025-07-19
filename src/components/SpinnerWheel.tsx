@@ -1,6 +1,8 @@
 
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { wheelVariants } from "@/lib/variants";
+import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { Star } from "lucide-react";
 import { offerConfig } from "@/config/offerConfig.tsx";
 import type { Offer } from "@/config/offerConfig.tsx";
@@ -107,14 +109,15 @@ const SpinnerWheel = ({ onSpinComplete, isSpinning, canSpin, onSpinStart, preSel
       
       {/* Spin button and status */}
       <div className="flex flex-col items-center mt-8 space-y-3">
-        <Button
+        <AnimatedButton
           onClick={handleSpinClick}
           disabled={isSpinning || !canSpin}
           className="px-16 py-8 text-2xl font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300 disabled:opacity-50 shadow-festive"
           size="lg"
+          isSpinButton
         >
           {isSpinning ? "SPINNING..." : "🎯 SPIN NOW 🎯"}
-        </Button>
+        </AnimatedButton>
         
       </div>
     </div>

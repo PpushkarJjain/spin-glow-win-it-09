@@ -1,14 +1,6 @@
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { AnimatedPopup } from "@/components/ui/AnimatedPopup";
+import { Button } from "@/components/ui/button";
 import { SpinnerSegment } from "./SpinnerWheel";
 import { Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -49,25 +41,25 @@ const NewResultPopup = ({ isOpen, onClose, result, audioManager }: NewResultPopu
   if (!result) return null;
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className="bg-festive-gradient border-4 border-primary text-white max-w-sm w-full p-6 rounded-2xl shadow-lg">
-        <AlertDialogHeader className="text-center">
+    <AnimatedPopup isOpen={isOpen} onClose={onClose}>
+      <div className="bg-festive-gradient border-4 border-primary text-white max-w-sm w-full p-6 rounded-2xl shadow-lg">
+        <div className="text-center">
           <div className="flex justify-center items-center mb-4">
             <Gift className="h-16 w-16 text-yellow-300" />
           </div>
-          <AlertDialogTitle className="text-3xl font-playfair flex justify-center items-center">
+          <h2 className="text-3xl font-playfair flex justify-center items-center">
             Congratulations!
-          </AlertDialogTitle>
-          <AlertDialogDescription className="text-white/80 text-base pt-2 flex justify-center items-center">
+          </h2>
+          <p className="text-white/80 text-base pt-2 flex justify-center items-center">
             You've won a fantastic prize!
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+          </p>
+        </div>
         
         <div className="my-6 text-center">
           <div 
-            className="text-4xl font-bold py-4 px-6 rounded-lg shadow-inner"
+            className="text-4xl font-bold py-4 px-6 rounded-lg shadow-inner bg-white/20"
             style={{ 
-              backgroundColor: result.color,
+              // backgroundColor: result.color,
               color: result.textColor,
               textShadow: "2px 2px 4px rgba(0,0,0,0.5)"
             }}
@@ -76,19 +68,19 @@ const NewResultPopup = ({ isOpen, onClose, result, audioManager }: NewResultPopu
           </div>
         </div>
         
-        <AlertDialogFooter className="flex sm:flex-row sm:justify-center gap-4">
-          <AlertDialogCancel className="bg-white/20 border-none hover:bg-white/30">
+        <div className="flex sm:flex-row sm:justify-center gap-4">
+          <Button onClick={onClose} className="bg-white/20 border-none hover:bg-white/30">
             Close
-          </AlertDialogCancel>
-          <AlertDialogAction 
+          </Button>
+          <Button
             onClick={handleNextPlayer}
             className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
           >
             🎉 Next Player 🎉
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </Button>
+        </div>
+      </div>
+    </AnimatedPopup>
   );
 };
 

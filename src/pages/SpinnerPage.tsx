@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { pageVariants } from "@/lib/variants";
 import { SpinnerWheel } from "@/components/SpinnerWheel";
 import type { SpinnerSegment } from "@/components/SpinnerWheel";
 import NewResultPopup from "@/components/NewResultPopup";
@@ -11,7 +13,8 @@ import LoadingSpinner from "@/components/spinner/LoadingSpinner";
 import SpinnerPageHeader from "@/components/spinner/SpinnerPageHeader";
 import SpinnerActions from "@/components/spinner/SpinnerActions";
 import SpinCounter from "@/components/spinner/SpinCounter";
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/AnimatedButton";
+import { AnimatedIcon } from "@/components/ui/AnimatedIcon";
 import { Coins, Gift, Percent, Star, UserCog } from "lucide-react";
 import { useAudioManager } from "@/hooks/useAudioManager";
 
@@ -157,16 +160,16 @@ const SpinnerPage = () => {
   // Helper function to get icon for segment
   const getIconForSegment = (segmentId: number) => {
     const iconMap: Record<number, React.ReactNode> = {
-      1: <Percent className="w-4 h-4" />,
-      2: <Percent className="w-4 h-4" />,
-      3: <Coins className="w-4 h-4" />,
-      4: <Coins className="w-4 h-4" />,
-      5: <Percent className="w-4 h-4" />,
-      6: <Percent className="w-4 h-4" />,
-      7: <Gift className="w-4 h-4" />,
-      8: <Star className="w-4 h-4" />
+      1: <AnimatedIcon><Percent className="w-4 h-4" /></AnimatedIcon>,
+      2: <AnimatedIcon><Percent className="w-4 h-4" /></AnimatedIcon>,
+      3: <AnimatedIcon><Coins className="w-4 h-4" /></AnimatedIcon>,
+      4: <AnimatedIcon><Coins className="w-4 h-4" /></AnimatedIcon>,
+      5: <AnimatedIcon><Percent className="w-4 h-4" /></AnimatedIcon>,
+      6: <AnimatedIcon><Percent className="w-4 h-4" /></AnimatedIcon>,
+      7: <AnimatedIcon><Gift className="w-4 h-4" /></AnimatedIcon>,
+      8: <AnimatedIcon><Star className="w-4 h-4" /></AnimatedIcon>
     };
-    return iconMap[segmentId] || <Gift className="w-4 h-4" />;
+    return iconMap[segmentId] || <AnimatedIcon><Gift className="w-4 h-4" /></AnimatedIcon>;
   };
 
   const handleNextPlayer = useCallback(() => {
@@ -196,17 +199,23 @@ const SpinnerPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-festive-gradient font-poppins overflow-x-hidden">
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      className="min-h-screen bg-festive-gradient font-poppins overflow-x-hidden"
+    >
       {showOverlay && (
         <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-50">
           <h2 className="text-4xl font-bold text-white mb-4">Welcome!</h2>
           {/* <p className="text-lg text-white/80 mb-8">Click below to start the experience with sound.</p> */}
-          <Button
+          <AnimatedButton
             onClick={handleStartExperience}
             className="bg-gradient-primary hover:shadow-glow transition-all duration-300 text-lg font-bold uppercase px-8 py-4"
           >
             Let's spin!
-          </Button>
+          </AnimatedButton>
         </div>
       )}
       <SpinnerPageHeader audioManager={audioManager} />
@@ -235,31 +244,31 @@ const SpinnerPage = () => {
           </div>
 
           {/* Center: Brand */}
-          <Button
+          <AnimatedButton
             onClick={handleBrandClick}
             variant="link"
             className="flex-[2] px-2 h-full flex items-center justify-center font-playfair font-bold uppercase text-brand-yellow tracking-wider text-xl sm:text-2xl text-center drop-shadow-lg hover:text-yellow-300 transition-colors"
             style={{ letterSpacing: "0.08em" }}
             tabIndex={-1}
-            asChild
+            
           >
             <span className="flex flex-col items-center justify-center leading-tight">
               <span>ShreeDhan</span>
               <span>Jwellers</span>
             </span>
-          </Button>
+          </AnimatedButton>
 
           {/* Right: Admin Icon */}
           <div className="flex-1 flex items-center justify-end h-full">
-            <Button
+            <AnimatedButton
               onClick={handleAdminAccess}
               variant="outline"
               size="icon"
               className="rounded-md w-20 h-20 bg-white/20 hover:bg-white/30 border-white/20 text-brand-yellow"
             >
-              <UserCog className="w-16 h-16" />
+              <AnimatedIcon><UserCog className="w-16 h-16" /></AnimatedIcon>
               <span className="sr-only">Admin</span>
-            </Button>
+            </AnimatedButton>
           </div>
         </div>
       </div>
@@ -270,7 +279,7 @@ const SpinnerPage = () => {
         result={spinResult}
         audioManager={audioManager}
       />
-    </div>
+    </motion.div>
   );
 };
 

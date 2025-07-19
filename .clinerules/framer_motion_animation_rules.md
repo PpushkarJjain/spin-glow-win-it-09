@@ -160,37 +160,6 @@ const animationProps = shouldReduceMotion
 - **CONFIRM** animations provide clear feedback
 - **ENSURE** loading states are informative and engaging
 
-### Common Animation Patterns
-- **Button Interactions**
-```bash
-const buttonVariants = {
-  hover: { scale: 1.02, transition: { duration: 0.2 } },
-  tap: { scale: 0.98 }
-}
-```
-
-- **Modal Animations**
-```bash
-const modalVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { opacity: 1, scale: 1 },
-  exit: { opacity: 0, scale: 0.8 }
-}
-```
-
-- **List Item Stagger** 
-```bash
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-}
-```
-
 ### Error Handling
 #### Animation Failures
 - **PROVIDE** fallbacks for failed animations

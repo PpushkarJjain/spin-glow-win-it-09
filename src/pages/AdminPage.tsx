@@ -1,7 +1,10 @@
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { pageVariants } from "@/lib/variants";
 import { ArrowLeft, RotateCcw, Trash, Trash2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { AnimatedButton } from "@/components/ui/AnimatedButton";
+import { AnimatedIcon } from "@/components/ui/AnimatedIcon";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
@@ -148,31 +151,37 @@ const AdminPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-festive-gradient p-4 font-poppins">
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      className="min-h-screen bg-festive-gradient p-4 font-poppins"
+    >
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <Button
+        <AnimatedButton
           onClick={handleBackToSpinner}
           variant="ghost"
           className="text-white hover:bg-white/20"
         >
-          <ArrowLeft className="h-5 w-5 mr-2" />
+          <AnimatedIcon><ArrowLeft className="h-5 w-5 mr-2" /></AnimatedIcon>
           
-        </Button>
+        </AnimatedButton>
         
         <h1 className="text-2xl font-bold text-white font-playfair">
           ADMIN PANEL
         </h1>
         
-        <Button
+        <AnimatedButton
           onClick={handleReset}
           disabled={isResetting}
           variant="destructive"
           className="bg-red-600 hover:bg-red-700"
         >
-          <Trash2Icon className="h-4 w-4 mr-2" />
+          <AnimatedIcon><Trash2Icon className="h-4 w-4 mr-2" /></AnimatedIcon>
           {isResetting ? 'Resetting...' : ''}
-        </Button>
+        </AnimatedButton>
       </div>
 
       <div className="max-w-4xl mx-auto space-y-6">
@@ -259,7 +268,7 @@ const AdminPage = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

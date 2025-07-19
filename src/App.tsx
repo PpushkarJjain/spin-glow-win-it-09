@@ -3,7 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import FormPage from "./pages/FormPage";
 import SpinnerPage from "./pages/SpinnerPage";
 import AdminPage from "./pages/AdminPage";
@@ -30,7 +31,9 @@ const PageLoader = () => (
   </div>
 );
 
-const App = () => {
+const AppContent = () => {
+  const location = useLocation();
+
   useEffect(() => {
     // Performance monitoring
     console.log("🚀 Spinner App initialized at:", new Date().toISOString());
@@ -65,20 +68,29 @@ const App = () => {
   }, []);
 
   return (
+    <Suspense fallback={<PageLoader />}>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Index />} />
+          <Route path="/form" element={<FormPage />} />
+          <Route path="/spinner" element={<SpinnerPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AnimatePresence>
+    </Suspense>
+  );
+};
+
+const App = () => {
+  return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
         <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/spinner" element={<SpinnerPage />} />
-                <Route path="/admin" element={<AdminPage />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
+            <AppContent />
           </BrowserRouter>
         </TooltipProvider>
       </ErrorBoundary>

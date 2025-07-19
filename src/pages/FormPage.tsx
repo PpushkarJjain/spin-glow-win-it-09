@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { pageVariants } from "@/lib/variants";
+import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,7 +73,13 @@ const FormPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-festive-gradient flex items-center justify-center p-4 font-poppins">
+    <motion.div
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      className="min-h-screen bg-festive-gradient flex items-center justify-center p-4 font-poppins"
+    >
       <div className="w-full max-w-md">
         <Card className="shadow-festive border-2 border-primary/20">
           <CardHeader className="text-center space-y-2">
@@ -114,13 +122,13 @@ const FormPage = () => {
                 />
               </div>
 
-              <Button
+              <AnimatedButton
                 type="submit"
                 disabled={isLoading}
                 className="w-full h-12 text-lg font-bold uppercase bg-gradient-primary hover:shadow-glow transition-all duration-300"
               >
                 {isLoading ? "Please Wait..." : "Start Spinning"}
-              </Button>
+              </AnimatedButton>
             </form>
             <div className="mt-4 pt-2 text-sm text-muted-foreground">
               <ul className="space-y-2">
@@ -132,7 +140,7 @@ const FormPage = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
