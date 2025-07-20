@@ -48,6 +48,7 @@
 
 | Date       | Feature/Update                                       | Notes or Context                                                              |
 | ---------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 2025-07-19 | Animation Implementation (faae170, 8bc7c57, a30f109) | Integrated Framer Motion for UI animations and updated workflow files.        |
 | 2025-07-17 | Audio Experience (64cc670, 361d65a, 0958368, 90612ce, 9f2f46f) | Implemented "Start Experience" overlay, added audio files, winning sound effects, and background music with toggle. |
 | 2025-07-16 | Terms & Conditions and Admin UI (747796e, 1e2b028) | Added Terms & Conditions, and updated admin password timing and UI.           |
 | 2025-07-15 | UI and UX Refinements (0adf52c, 87391ae, cdf7413)    | Implemented a custom animated result popup, simplified navigation, and improved responsiveness. |
@@ -71,6 +72,9 @@
 
 #### 5. **Recent Updates**
 
+*   **Animation Implementation**:
+    *   Integrated the Framer Motion library to introduce animations throughout the application.
+    *   Updated the animation workflow and rules to streamline the implementation of new animations.
 *   **Audio Experience**:
     *   Implemented a "Start Experience" overlay on the Spinner Page to comply with browser autoplay policies for audio.
     *   Added background music, spin, and win sound effects to enhance the user experience.
