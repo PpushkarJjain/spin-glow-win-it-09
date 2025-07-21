@@ -229,13 +229,15 @@ const SpinnerPage = () => {
           preSelectedResult={spinResult}
         />
         
-        <SpinnerActions
-          hasSpun={hasSpun}
-          showResult={showResult}
-          canSpin={canSpin}
-          isSpinning={isSpinning}
-          onNextPlayer={handleNextPlayer}
-        />
+        <div className="mt-4 sm:mt-0">
+          <SpinnerActions
+            hasSpun={hasSpun}
+            showResult={showResult}
+            canSpin={canSpin}
+            isSpinning={isSpinning}
+            onNextPlayer={handleNextPlayer}
+          />
+        </div>
 
         <div className="flex items-center justify-between w-full max-w-lg mx-auto mt-6 sm:gap-x-6 h-16 ">
           {/* Left: Total Spins */}

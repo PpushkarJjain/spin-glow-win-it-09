@@ -1,6 +1,9 @@
 import { Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import InstallPrompt from "@/components/PWA/InstallPrompt";
+import OfflineIndicator from "@/components/PWA/OfflineIndicator";
+import { registerPwa } from "@/utils/pwa";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -83,12 +86,18 @@ const AppContent = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    registerPwa();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
         <TooltipProvider>
           <Toaster />
           <Sonner />
+          <InstallPrompt />
+          <OfflineIndicator />
           <BrowserRouter>
             <AppContent />
           </BrowserRouter>
