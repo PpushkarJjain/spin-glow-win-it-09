@@ -44,9 +44,14 @@ const InstallPrompt: React.FC = () => {
   }
 
   return (
-    <div className="install-prompt">
-      <p>Install this app for a better experience!</p>
-      <button onClick={handleInstallClick}>Install</button>
+    <div className="fixed top-0 left-0 right-0 bg-festive-gradient p-4 text-white shadow-lg z-50 flex items-center justify-between">
+      <p className="font-medium">Install this app for a better experience!</p>
+      <button
+        onClick={handleInstallClick}
+        className="px-4 py-2 text-sm font-bold uppercase bg-gradient-primary rounded-md hover:shadow-glow transition-all duration-300"
+      >
+        Install
+      </button>
     </div>
   );
 };

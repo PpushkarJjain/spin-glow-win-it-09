@@ -14,7 +14,14 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    viteCompression(),
+    viteCompression({
+      algorithm: 'gzip',
+      ext: '.gz',
+    }),
+    viteCompression({
+      algorithm: 'brotliCompress',
+      ext: '.br',
+    }),
     mkcert(),
     VitePWA({
       registerType: "autoUpdate",

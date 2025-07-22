@@ -83,7 +83,7 @@ const FormPage = () => {
       <div className="w-full max-w-md">
         <Card className="shadow-festive border-2 border-primary/20">
           <CardHeader className="text-center space-y-2">
-            <CardTitle className="text-3xl font-bold font-playfair text-primary">
+            <CardTitle className="text-3xl font-bold font-playfair">
               Shreedhan Jwellers
             </CardTitle>
             <p className="text-secondary font-medium">
