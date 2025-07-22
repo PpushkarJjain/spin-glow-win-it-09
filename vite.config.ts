@@ -3,7 +3,8 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
-import mkcert from 'vite-plugin-mkcert'
+import mkcert from 'vite-plugin-mkcert';
+import viteCompression from 'vite-plugin-compression';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -13,29 +14,12 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
+    viteCompression(),
     mkcert(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
-      manifest: {
-        name: "Spin Glow Win It",
-        short_name: "SpinGlow",
-        description: "A fun spinning wheel game to win prizes.",
-        theme_color: "#ffffff",
-        background_color: "#ffffff",
-        icons: [
-          {
-            src: "pwa-192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-        ],
-      },
+      manifest: false,
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,gif,webp,woff,woff2}'],
         runtimeCaching: [

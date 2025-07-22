@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import InstallPrompt from "@/components/PWA/InstallPrompt";
@@ -8,11 +8,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import FormPage from "./pages/FormPage";
-import SpinnerPage from "./pages/SpinnerPage";
-import AdminPage from "./pages/AdminPage";
 import Index from "./pages/Index";
 import ErrorBoundary from "@/components/ErrorBoundary";
+
+const FormPage = lazy(() => import("./pages/FormPage"));
+const SpinnerPage = lazy(() => import("./pages/SpinnerPage"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
 import { runAllTests } from "@/utils/testHelpers";
 
 const queryClient = new QueryClient({
@@ -71,17 +72,19 @@ const AppContent = () => {
   }, []);
 
   return (
-    <Suspense fallback={<PageLoader />}>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<Index />} />
-          <Route path="/form" element={<FormPage />} />
-          <Route path="/spinner" element={<SpinnerPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AnimatePresence>
-    </Suspense>
+    <main>
+      <Suspense fallback={<PageLoader />}>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<Index />} />
+            <Route path="/form" element={<FormPage />} />
+            <Route path="/spinner" element={<SpinnerPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AnimatePresence>
+      </Suspense>
+    </main>
   );
 };
 
