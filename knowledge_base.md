@@ -28,6 +28,10 @@
 | `src/services/`               | Services for interacting with backend APIs.                |
 | `src/integrations/supabase/`  | Handles all Supabase-related API functions and types.      |
 | `public/audio/`               | Contains audio assets for the application.                 |
+| `public/manifest.json`        | PWA manifest file for installable app experience.          |
+| `src/components/PWA/`         | Components related to PWA functionality (e.g., install prompt). |
+| `src/hooks/useAudioManager.ts` | Custom hook for managing audio playback.                   |
+| `src/components/NewResultPopup.tsx` | Custom animated result popup component.              |
 
 > ✏️ *Add or remove files based on actual project structure.*
 
@@ -48,6 +52,11 @@
 
 | Date       | Feature/Update                                       | Notes or Context                                                              |
 | ---------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
+| 2025-07-22 | Notification Banner Styling (5c30d78)                | Changed the styling of the notification banner.                               |
+| 2025-07-22 | PWA Prompt Styling & Asset Compression (249e89a)     | Restyled PWA install prompt and configured Vite for Gzip/Brotli compression.  |
+| 2025-07-22 | Performance Optimization (c9078d2)                   | Implemented lazy loading, compressed assets, optimized font loading, memoized UI components, and enhanced PWA capabilities. |
+| 2025-07-21 | PWA Support for Offline Access (af5cce1)             | Transformed application into a PWA with service worker, manifest, and meta tags. |
+| 2025-07-20 | PWA Development Rules and Workflow (cd6e273)         | Added documentation for PWA development rules and conversion workflow.        |
 | 2025-07-19 | Animation Implementation (faae170, 8bc7c57, a30f109) | Integrated Framer Motion for UI animations and updated workflow files.        |
 | 2025-07-17 | Audio Experience (64cc670, 361d65a, 0958368, 90612ce, 9f2f46f) | Implemented "Start Experience" overlay, added audio files, winning sound effects, and background music with toggle. |
 | 2025-07-16 | Terms & Conditions and Admin UI (747796e, 1e2b028) | Added Terms & Conditions, and updated admin password timing and UI.           |
@@ -65,13 +74,33 @@
 | 2025-07-11 | Supabase Project Connection (b077575)                | Added Supabase configuration and types.                                       |
 | 2025-07-11 | Spinner Button and Flow Refactor (8a856de)           | Consolidated UI and improved user flow for the spinner.                       |
 | 2025-07-11 | Initial Commit (367af92)                             | Initial commit from remix.                                                    |
-
 > 🕓 *Update this table regularly as new features or fixes are added.*
 
 ---
 
 #### 5. **Recent Updates**
 
+*   **Notification Banner Styling**:
+    *   The styling of the notification banner has been updated.
+*   **PWA Prompt Styling & Asset Compression**:
+    *   The PWA install prompt has been restyled into a fixed banner at the top of the screen, using the application's theme colors and gradients.
+    *   The Vite configuration now uses `vite-plugin-compression` to generate Gzip (.gz) and Brotli (.br) compressed assets during the build process, reducing bundle sizes and improving load times.
+    *   A redundant text color class was removed from the `FormPage` title for style consistency.
+*   **Performance Optimization**:
+    *   `React.lazy` was implemented for `FormPage`, `SpinnerPage`, and `AdminPage` to code-split the application, reducing initial bundle size.
+    *   `vite-plugin-compression` was configured to create gzipped versions of assets.
+    *   Google Fonts stylesheet is preloaded in `index.html` to prevent blocking rendering.
+    *   `Card` and its sub-components are wrapped with `React.memo` to prevent unnecessary re-renders.
+    *   A `manifest.json` and `mobile-web-app-capable` meta tag were added to enhance PWA capabilities.
+*   **PWA Support for Offline Access**:
+    *   The application has been transformed into a Progressive Web App (PWA), enabling offline functionality and installation on user devices.
+    *   `vite-plugin-pwa` was added to generate a service worker and manifest file.
+    *   The web app manifest was configured with app icons, name, and theme colors.
+    *   Necessary PWA meta tags were included in `index.html`.
+    *   A `PwaUpdater` component was created for new version notifications.
+    *   `vite-plugin-mkcert` was added for local HTTPS development.
+*   **PWA Development Rules and Workflow**:
+    *   Documentation for PWA development rules and conversion workflow was added.
 *   **Animation Implementation**:
     *   Integrated the Framer Motion library to introduce animations throughout the application.
     *   Updated the animation workflow and rules to streamline the implementation of new animations.
